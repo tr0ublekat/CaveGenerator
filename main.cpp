@@ -30,9 +30,6 @@ void simulation();
 
 GameOfLife gameOfLife(mapSize, 40);
 
-void gameSim() {
-    gameOfLife.life();
-}
 
 // Отрисовка карты по вектору карты
 void display() {
@@ -130,6 +127,8 @@ void simulation() {
 
 int main(int argc, char **argv) {
     glutInit(&argc, argv);
+
+    gameOfLife.setBS({5, 6, 7, 8}, {4, 5, 6, 7, 8});
 
     glutInitDisplayMode(GLUT_DOUBLE);
     glutInitWindowSize(1366, 780);

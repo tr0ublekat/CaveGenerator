@@ -48,10 +48,11 @@ void GameOfLife::life() {
                 continue;
             }
 
-            int neighbours = getNeighbourCount(i, j);
+            size_t neighbours = getNeighbourCount(i, j);
 
             if (this->mainMatrix[i][j]) {
-                if (neighbours >= 4 && neighbours <= 8) {
+                //if (neighbours >= 4 && neighbours <= 8) {
+                if (isNumberInArray(neighbours, this->S)) {
                     // Ничего
                     row.push_back(true);
                 }
@@ -61,7 +62,8 @@ void GameOfLife::life() {
                 }
             }
             else {
-                if (neighbours >= 5 && neighbours <= 8) {
+                //if (neighbours >= 5 && neighbours <= 8) {
+                if (isNumberInArray(neighbours, this->B)) {
                     // map[i][j] = true;
                     row.push_back(true);
                 }
@@ -89,7 +91,7 @@ void GameOfLife::deleteBorders() {
     }
 }
 
-int GameOfLife::getNeighbourCount(int i, int j) {
+size_t GameOfLife::getNeighbourCount(int i, int j) {
     size_t count = 0;
     if (this->mainMatrix[i - 1][j - 1]) ++count;
     if (this->mainMatrix[i][j - 1]) ++count;
@@ -113,11 +115,23 @@ bool GameOfLife::randBool(int chance) {
     }
     return false;
 }
-void GameOfLife::setBS(std::initializer_list<size_t>& B, std::initializer_list<size_t>& S) {
+void GameOfLife::setBS(std::initializer_list<size_t> B, std::initializer_list<size_t> S) {
 	this->B = B;
 	this->S = S;
 }
 
 vector<vector<bool>>& GameOfLife::operator()() {
 	return this->mainMatrix;
+}
+
+bool GameOfLife::isNumberInArray(size_t number, vector<size_t>& vec) {
+    //std::cout << "vec: " << vec << "\tisk: " << number;
+    for (auto& a : vec) {
+        if (a == number) {
+            //printf("founded!\n");
+            return true;
+        }
+    }
+    //printf("\n");
+    return false;
 }
