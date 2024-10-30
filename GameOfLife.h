@@ -3,10 +3,10 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+//#include <thread>
+#include <functional>
 
-using std::vector;
-using std::string;
-using std::ifstream;
+using std::vector, std::string, std::ifstream, std::ref;
 
 template<typename Any>
 std::ostream& operator<<(std::ostream& stream, vector<Any> vec) {
@@ -30,6 +30,7 @@ private:
 	size_t getNeighbourCount(unsigned int i, unsigned int j);
 	void deleteBorders();
 	bool isNumberInArray(size_t number,vector<size_t> &arr);
+	void innerLife(size_t i, vector<bool>& row);
 public:
 	GameOfLife(size_t size, unsigned int chanceOfSpawn = 40);
 
