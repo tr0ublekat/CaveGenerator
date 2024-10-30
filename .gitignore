@@ -1,3 +1,9 @@
 *.exe
 main
 start.sh
+/.vs
+CaveGenerator.vcxproj.user
+CaveGenerator.vcxproj.filters
+CaveGenerator.vcxproj
+CaveGenerator.sln
+CaveGenerator.cpp
