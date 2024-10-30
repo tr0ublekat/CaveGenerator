@@ -15,6 +15,21 @@ float y_offset = 0.0f;
 // Карта
 vector<vector<bool>> map;
 
+
+
+// Прототипы
+void startApp();
+void init();
+void life();
+void next_iteration();
+int getNeighbourCount(int i, int j);
+void display();
+void reshape(GLsizei width, GLsizei height);
+void keyboard(unsigned char c, int x, int y);
+void simulation();
+
+
+// Увеличение карты для нормальной размерности при неиспользуемых полях
 void startApp() {
     mapSize += 2;
 }
@@ -38,9 +53,31 @@ void init() {
     }
 }
 
+// Логика проверки жизни 
+void life() {
+    for (size_t i = 1; i < mapSize-1; i++) {
+        for (size_t j = 1; j < mapSize-1; j++) {
+            int neighbours = getNeighbourCount(i, j);
+            if (map[i][j]) {
+                if (neighbours == 2 || neighbours == 3) {
+                    // Ничего
+                }
+                else {
+                    map[i][j] = false;
+                }
+            }
+            else {
+                if (neighbours == 3) {
+                    map[i][j] = true;
+                }
+            }
+        }
+    }
+}
+
 // Логика рождения и умирания клеток
 void next_iteration() {
-    init(); // Тест на нажатие кнопки
+    life();
 }
 
 // Получить кол-во соседей клетки
@@ -100,8 +137,6 @@ void display() {
         posY += 0.1f;
     }
 
-    cout << getNeighbourCount(1, 2) << endl;
-
     glutSwapBuffers();
 }
 
@@ -144,7 +179,6 @@ void keyboard(unsigned char c, int x, int y) {
     if (c == ' ') {
         next_iteration();
     }
-    cout << scale << endl;
 }
 
 void simulation() {
