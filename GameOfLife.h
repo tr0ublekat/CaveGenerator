@@ -1,7 +1,12 @@
 #include <vector>
 #include <random>
 #include <iostream>
+#include <fstream>
+#include <string>
+
 using std::vector;
+using std::string;
+using std::ifstream;
 
 template<typename Any>
 std::ostream& operator<<(std::ostream& stream, vector<Any> vec) {
@@ -15,22 +20,29 @@ class GameOfLife {
 private:
 	vector<vector<bool>> mainMatrix;
 	vector<vector<bool>> secondMatrix;
-	int chance;
+	unsigned int chance;
 	size_t size;
 	vector<size_t> B;
 	vector<size_t> S;
 
 
-	bool randBool(int chance = 50);
-	size_t getNeighbourCount(int i, int j);
+	bool randBool(unsigned int chance = 50);
+	size_t getNeighbourCount(unsigned int i, unsigned int j);
 	void deleteBorders();
 	bool isNumberInArray(size_t number,vector<size_t> &arr);
 public:
-	GameOfLife(size_t size, int chanceOfSpawn = 40);
+	GameOfLife(size_t size, unsigned int chanceOfSpawn = 40);
 
 	void init();
 	void life();
 
+	void setChance(unsigned int chance);
 	void setBS(std::initializer_list<size_t> B, std::initializer_list<size_t> S);
+	void setB(std::initializer_list<size_t> B);
+	void setB(size_t begin, size_t end);
+	void setS(std::initializer_list<size_t> S);
+	void setS(size_t begin, size_t end); // устанавливает B от begin до end. Ќапример (1,5) будет 1,2,3,4,5
 	vector<vector<bool>>& operator()(); // ¬озвращает матрицу по ссылке дл€ отрисовки
+
+	bool deserialization(const string& filename = "../cave.txt");
 };

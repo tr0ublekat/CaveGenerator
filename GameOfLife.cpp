@@ -1,12 +1,10 @@
 #include "GameOfLife.h"
 
-GameOfLife::GameOfLife(size_t size, int chance) {
+GameOfLife::GameOfLife(size_t size, unsigned int chance) {
 	this->mainMatrix.reserve(size+2);
 	for (auto& a : this->mainMatrix)
 		a.reserve(size+2);
 	this->chance = chance;
-	this->B = { 4 };
-	this->S = { 5 };
     this->size = size + 2;
     this->init();
 }
@@ -25,7 +23,7 @@ void GameOfLife::init() {
                 row.push_back(value);
             }
             else {
-                bool value = (randBool());
+                bool value = (randBool(this->chance));
                 row.push_back(value);
             }
         }
@@ -35,6 +33,10 @@ void GameOfLife::init() {
 
 void GameOfLife::life() {
     this->secondMatrix.clear();
+    if (B.size() == 0)
+        throw std::runtime_error("B rules is empty!");
+    if (S.size() == 0)
+        throw std::runtime_error("S rules is empty!");
     for (size_t i = 0; i < size; i++) {
 
         vector<bool> row;
@@ -51,8 +53,7 @@ void GameOfLife::life() {
             size_t neighbours = getNeighbourCount(i, j);
 
             if (this->mainMatrix[i][j]) {
-                //if (neighbours >= 4 && neighbours <= 8) {
-                if (isNumberInArray(neighbours, this->S)) {
+                if (isNumberInArray(neighbours, ref(S))) {
                     // Ничего
                     row.push_back(true);
                 }
@@ -62,8 +63,7 @@ void GameOfLife::life() {
                 }
             }
             else {
-                //if (neighbours >= 5 && neighbours <= 8) {
-                if (isNumberInArray(neighbours, this->B)) {
+                if (isNumberInArray(neighbours, ref(B))) {
                     // map[i][j] = true;
                     row.push_back(true);
                 }
@@ -91,7 +91,7 @@ void GameOfLife::deleteBorders() {
     }
 }
 
-size_t GameOfLife::getNeighbourCount(int i, int j) {
+size_t GameOfLife::getNeighbourCount(unsigned int i, unsigned int j) {
     size_t count = 0;
     if (this->mainMatrix[i - 1][j - 1]) ++count;
     if (this->mainMatrix[i][j - 1]) ++count;
@@ -105,11 +105,11 @@ size_t GameOfLife::getNeighbourCount(int i, int j) {
     return count;
 }
 
-bool GameOfLife::randBool(int chance) {
+bool GameOfLife::randBool(unsigned int chance) {
     static std::random_device rd;
     static std::mt19937 gen(rd());
     std::uniform_int_distribution<> dist(0, 100);
-    int res = dist(gen);
+    unsigned int res = dist(gen);
     if (res >= chance) {
         return true;
     }
@@ -124,14 +124,50 @@ vector<vector<bool>>& GameOfLife::operator()() {
 	return this->mainMatrix;
 }
 
+void GameOfLife::setB(std::initializer_list<size_t> arr) {
+    this->B = arr;
+}
+void GameOfLife::setS(std::initializer_list<size_t> arr) {
+    this->S = arr;
+}
+
+void GameOfLife::setB(size_t begin, size_t end) {
+    for (size_t x = begin; x <= end; x++) {
+        this->B.push_back(x);
+    }
+}
+void GameOfLife::setS(size_t begin, size_t end) {
+    for (size_t x = begin; x <= end; x++) {
+        this->S.push_back(x);
+    }
+}
+
+void GameOfLife::setChance(unsigned int chance) {
+    this->chance = chance;
+}
+
 bool GameOfLife::isNumberInArray(size_t number, vector<size_t>& vec) {
-    //std::cout << "vec: " << vec << "\tisk: " << number;
     for (auto& a : vec) {
         if (a == number) {
-            //printf("founded!\n");
             return true;
         }
     }
-    //printf("\n");
     return false;
+}
+
+bool GameOfLife::deserialization(const string& filename) {
+    std::ofstream stream(filename);
+    if (!stream.is_open()) {
+        printf("Unable to write into a file %s!\n", filename.c_str());
+        return false;
+    }
+
+    for (auto& x : this->mainMatrix) {
+        for (auto y : x) {
+            stream << y;
+        } stream << "\n";
+    }
+
+    stream.close();
+    return true;
 }

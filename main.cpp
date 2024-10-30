@@ -28,7 +28,7 @@ void keyboard(unsigned char c, int x, int y);
 void simulation();
 
 
-GameOfLife gameOfLife(mapSize, 40);
+GameOfLife gameOfLife(mapSize, 50);
 
 
 // Отрисовка карты по вектору карты
@@ -97,27 +97,30 @@ void keyboard(unsigned char c, int x, int y) {
         scale += 0.005f;
         if (scale >= 10) scale = 10;
     }
-    if (c == '-') {
+    else if (c == '-') {
         scale -= 0.005f;
         if (scale <= 0.005f) scale = 0.005f;
     }
-    if (c == 'w') {
+    else if (c == 'w') {
         y_offset -= 0.1f;
     }
-    if (c == 's') {
+    else if (c == 's') {
         y_offset += 0.1f;
     }
-    if (c == 'a') {
+    else if (c == 'a') {
         x_offset += 0.1f;
     }
-    if (c == 'd') {
+    else if (c == 'd') {
         x_offset -= 0.1f;
     }
-    if (c == ' ') {
+    else if (c == ' ') {
         gameOfLife.life();
     }
-    if (c == 'n') {
+    else if (c == 'n') {
         gameOfLife.init();
+    }
+    else if (c == '\\') {
+        gameOfLife.deserialization();
     }
 }
 
@@ -128,7 +131,10 @@ void simulation() {
 int main(int argc, char **argv) {
     glutInit(&argc, argv);
 
-    gameOfLife.setBS({5, 6, 7, 8}, {4, 5, 6, 7, 8});
+    //gameOfLife.setBS({5, 6, 7, 8}, {4, 5, 6, 7, 8}); // можно и так
+    //gameOfLife.setB({5,6,7,8}); // или так
+    gameOfLife.setB(5, 8);
+    gameOfLife.setS(4, 8);
 
     glutInitDisplayMode(GLUT_DOUBLE);
     glutInitWindowSize(1366, 780);
