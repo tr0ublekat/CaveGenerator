@@ -40,8 +40,8 @@ void startApp() {
 }
 
 void deleteBorders() {
-    for (int i = 0; i < mapSize; ++i) {
-        for (int j = 0; j < mapSize; ++j) {
+    for (size_t i = 0; i < mapSize; ++i) {
+        for (size_t j = 0; j < mapSize; ++j) {
             if ((i == 0) || (j == 0) || (i == mapSize-1) || (j == mapSize-1)) {
                 map[i][j] = false;
             }
@@ -52,18 +52,19 @@ void deleteBorders() {
 // Пересоздание карты
 void init() {
     map.clear();
-    for (int i = 0; i < mapSize; ++i) {
+    for (size_t i = 0; i < mapSize; ++i) {
 
         vector<bool> row;
         row.clear();
+        row.reserve(mapSize);
 
-        for (int j = 0; j < mapSize; ++j) {
+        for (size_t j = 0; j < mapSize; ++j) {
             if ((i == 0) || (j == 0) || (i == mapSize-1) || (j == mapSize-1)) {
                 bool value = false;
                 row.push_back(value);
             }
             else {
-                bool value = (rand() % 2 == 0);
+                bool value = (randBool());
                 row.push_back(value);
             }
         }
@@ -78,6 +79,7 @@ void life() {
 
         vector<bool> row;
         row.clear();
+        row.reserve(mapSize);
 
         for (size_t j = 0; j < mapSize; j++) {
 
@@ -124,7 +126,7 @@ void next_iteration() {
 
 // Получить кол-во соседей клетки
 int getNeighbourCount(int i, int j) {
-    UINT32 count = 0;
+    size_t count = 0;
     if (map[i-1][j-1]) ++count;
     if (map[i][j-1]) ++count;
     if (map[i+1][j-1]) ++count;
@@ -148,8 +150,8 @@ void display() {
 
     float posX = 0;
     float posY = 0;
-    for (int i = 0; i < map.size(); i++) {
-        for (int j = 0; j < map.size(); j++) {
+    for (size_t i = 0; i < map.size(); i++) {
+        for (size_t j = 0; j < map.size(); j++) {
             if (map[i][j]) {
                 glPushMatrix();
                 glBegin(GL_QUADS);
@@ -199,24 +201,24 @@ void reshape(GLsizei width, GLsizei height) {
 
 void keyboard(unsigned char c, int x, int y) {
     if (c == '+') {
-        scale += 0.005;
+        scale += 0.005f;
         if (scale >= 10) scale = 10;
     }
     if (c == '-') {
-        scale -= 0.005;
-        if (scale <= 0.005) scale = 0.005;
+        scale -= 0.005f;
+        if (scale <= 0.005f) scale = 0.005f;
     }
     if (c == 'w') {
-        y_offset -= 0.1;
+        y_offset -= 0.1f;
     }
     if (c == 's') {
-        y_offset += 0.1;
+        y_offset += 0.1f;
     }
     if (c == 'a') {
-        x_offset += 0.1;
+        x_offset += 0.1f;
     }
     if (c == 'd') {
-        x_offset -= 0.1;
+        x_offset -= 0.1f;
     }
     if (c == ' ') {
         next_iteration();
@@ -254,5 +256,9 @@ int main(int argc, char **argv) {
 }
 
 bool randBool() {
+    static std::random_device rd;
+    static std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dist(0, 1);
+    return bool(dist(gen));
     return false;
 }
