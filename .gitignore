@@ -5,3 +5,4 @@ start.sh
 *.ipch
 /WindowsVisualStudio/.vs
 /WindowsVisualStudio/WindowsV.0d25c0e2
+/WindowsVisualStudio/Debug
