@@ -2,3 +2,5 @@
 main
 start.sh
 /.vs
+*.ipch
+/WindowsVisualStudio/.vs
