@@ -35,7 +35,6 @@ void keyboard(unsigned char c, int x, int y);
 void simulation();
 void deleteBorders();
 
-
 bool randBool();
 
 // Увеличение карты для нормальной размерности при неиспользуемых полях
