@@ -12,10 +12,8 @@ float scale = 10.0f / float(mapSize); // Не трогать
 float x_offset = 0.0f;
 float y_offset = 0.0f;
 
-// Карта
-vector<vector<bool>> map;
-
-
+vector<vector<bool>> map; // Основная карта
+vector<vector<bool>> mapSecond; // Вторичная карта для одной итерации (временная)
 
 // Прототипы
 void startApp();
@@ -27,6 +25,7 @@ void display();
 void reshape(GLsizei width, GLsizei height);
 void keyboard(unsigned char c, int x, int y);
 void simulation();
+void deleteBorders();
 
 
 // Увеличение карты для нормальной размерности при неиспользуемых полях
@@ -34,11 +33,24 @@ void startApp() {
     mapSize += 2;
 }
 
+void deleteBorders() {
+    for (int i = 0; i < mapSize; ++i) {
+        for (int j = 0; j < mapSize; ++j) {
+            if ((i == 0) || (j == 0) || (i == mapSize-1) || (j == mapSize-1)) {
+                map[i][j] = false;
+            }
+        }
+    }
+}
+
 // Пересоздание карты
 void init() {
     map.clear();
     for (int i = 0; i < mapSize; ++i) {
+
         vector<bool> row;
+        row.clear();
+
         for (int j = 0; j < mapSize; ++j) {
             if ((i == 0) || (j == 0) || (i == mapSize-1) || (j == mapSize-1)) {
                 bool value = false;
@@ -53,26 +65,50 @@ void init() {
     }
 }
 
-// Логика проверки жизни 
+// Логика проверки жизни
 void life() {
-    for (size_t i = 1; i < mapSize-1; i++) {
-        for (size_t j = 1; j < mapSize-1; j++) {
+    mapSecond.clear();
+    for (size_t i = 0; i < mapSize; i++) {
+
+        vector<bool> row;
+        row.clear();
+
+        for (size_t j = 0; j < mapSize; j++) {
+
+            if ((i == 0) || (j == 0) || (i == mapSize-1) || (j == mapSize-1)) {
+                row.push_back(false);
+                continue;
+            }
+
             int neighbours = getNeighbourCount(i, j);
+
             if (map[i][j]) {
                 if (neighbours == 2 || neighbours == 3) {
                     // Ничего
+                    row.push_back(true);
                 }
                 else {
-                    map[i][j] = false;
+                    // map[i][j] = false;
+                    row.push_back(false);
                 }
             }
             else {
                 if (neighbours == 3) {
-                    map[i][j] = true;
+                    // map[i][j] = true;
+                    row.push_back(true);
+                }
+                else {
+                    // Ничего
+                    row.push_back(false);
                 }
             }
         }
+        mapSecond.push_back(row);
     }
+
+    map.clear();
+    map = mapSecond;
+    deleteBorders();
 }
 
 // Логика рождения и умирания клеток
