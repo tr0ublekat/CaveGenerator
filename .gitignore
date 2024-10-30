@@ -7,3 +7,8 @@ CaveGenerator.vcxproj.filters
 CaveGenerator.vcxproj
 CaveGenerator.sln
 CaveGenerator.cpp
+/CaveGenerator/Debug
+/CaveGenerator/x64
+/Debug
+freeglut.dll
+/x64

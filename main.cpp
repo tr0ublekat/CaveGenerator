@@ -1,4 +1,8 @@
-#include <GL/glut.h>
+#ifdef _WIN32
+#include "windows.h"
+#include "includes.h"
+#endif _WIN32
+
 #include <iostream>
 #include <vector>
 #include <random>
@@ -27,6 +31,8 @@ void keyboard(unsigned char c, int x, int y);
 void simulation();
 void deleteBorders();
 
+
+bool randBool();
 
 // Увеличение карты для нормальной размерности при неиспользуемых полях
 void startApp() {
@@ -118,7 +124,7 @@ void next_iteration() {
 
 // Получить кол-во соседей клетки
 int getNeighbourCount(int i, int j) {
-    uint count = 0;
+    UINT32 count = 0;
     if (map[i-1][j-1]) ++count;
     if (map[i][j-1]) ++count;
     if (map[i+1][j-1]) ++count;
@@ -245,4 +251,8 @@ int main(int argc, char **argv) {
 
     glutMainLoop();
     return 0;
+}
+
+bool randBool() {
+    return false;
 }
