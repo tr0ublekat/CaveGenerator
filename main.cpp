@@ -13,7 +13,7 @@
 
 using namespace std;
 
-unsigned int mapSize = 20; // Размер карты по Х и Y. Можно менять от 4 до 1000
+unsigned int mapSize = 200; // Размер карты по Х и Y. Можно менять от 4 до 1000
 float scale = 10.0f / float(mapSize); // Не трогать
 
 // Смещение камеры по Х и Y
@@ -46,7 +46,7 @@ void deleteBorders() {
     for (size_t i = 0; i < mapSize; ++i) {
         for (size_t j = 0; j < mapSize; ++j) {
             if ((i == 0) || (j == 0) || (i == mapSize-1) || (j == mapSize-1)) {
-                map[i][j] = false;
+                map[i][j] = true;
             }
         }
     }
@@ -63,7 +63,7 @@ void init() {
 
         for (size_t j = 0; j < mapSize; ++j) {
             if ((i == 0) || (j == 0) || (i == mapSize-1) || (j == mapSize-1)) {
-                bool value = false;
+                bool value = true;
                 row.push_back(value);
             }
             else {
@@ -94,7 +94,7 @@ void life() {
             int neighbours = getNeighbourCount(i, j);
 
             if (map[i][j]) {
-                if (neighbours == 2 || neighbours == 3) {
+                if (neighbours >= 4 && neighbours <= 8) {
                     // Ничего
                     row.push_back(true);
                 }
@@ -104,7 +104,7 @@ void life() {
                 }
             }
             else {
-                if (neighbours == 3) {
+                if (neighbours >= 5 && neighbours <= 8) {
                     // map[i][j] = true;
                     row.push_back(true);
                 }
