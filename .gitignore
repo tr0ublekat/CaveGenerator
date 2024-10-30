@@ -2,13 +2,3 @@
 main
 start.sh
 /.vs
-CaveGenerator.vcxproj.user
-CaveGenerator.vcxproj.filters
-CaveGenerator.vcxproj
-CaveGenerator.sln
-CaveGenerator.cpp
-/CaveGenerator/Debug
-/CaveGenerator/x64
-/Debug
-freeglut.dll
-/x64
