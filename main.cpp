@@ -215,6 +215,9 @@ void keyboard(unsigned char c, int x, int y) {
     if (c == ' ') {
         next_iteration();
     }
+    if (c == 'n') {
+        init();
+    }
 }
 
 void simulation() {
