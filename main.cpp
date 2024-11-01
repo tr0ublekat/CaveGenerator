@@ -46,8 +46,7 @@ void display() {
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    //glScalef(0.01f + scale, 0.01f + scale, 0.01f + scale);
-    glTranslatef(-float(mapSize)/20 + x_offset, float(mapSize)/20 + y_offset, -float(mapSize)/10 + scale);
+    glTranslatef(-float(mapSize)/20 + x_offset -0.1f, float(mapSize)/20 + y_offset, -float(mapSize)/10 + scale);
 
     float posX = 0;
     float posY = 0;
@@ -125,7 +124,7 @@ void keyboard(unsigned char c, int x, int y) {
     }
     else if (c == '1') {
         mapSize = 30;
-        scale = 15.0f / float(mapSize);
+        scale = 0.0f / float(mapSize);
         gameOfLife = GameOfLife(mapSize, chance);
         gameOfLife.setB(1, 3); // Генерирует лабиринты
         gameOfLife.setS(0, 4); // 
@@ -134,7 +133,7 @@ void keyboard(unsigned char c, int x, int y) {
     else if (c == '2') {
         mapSize = 100;
         scale = 15.0f / float(mapSize);
-        gameOfLife = GameOfLife(mapSize, chance-2);
+        gameOfLife = GameOfLife(mapSize, 49);
         gameOfLife.setB(5, 8);
         gameOfLife.setS(4, 8);
     }
@@ -173,7 +172,6 @@ void keyboard(unsigned char c, int x, int y) {
         for (int x = 0; x < 100; x++) {
             unsigned int sizeX = (unsigned int)(randomInt(0, mapSize - 2));
             unsigned int sizeY = (unsigned int)(randomInt(0, mapSize - 2));
-            //gameOfLife.fill(bool(randomInt(0, 1)), sizeX, sizeY, unsigned(randomInt(0, mapSize / 10 - randomInt(0, mapSize/20))));
             gameOfLife.fill(bool(randomInt(0, 1)), sizeX, sizeY, 2);
         }
     }
