@@ -153,6 +153,10 @@ void GameOfLife::setS(size_t begin, size_t end) {
     }
 }
 
+size_t GameOfLife::getSize() {
+    return this->mainMatrix.size();
+}
+
 void GameOfLife::setChance(unsigned int chance) {
     this->chance = chance;
 }
@@ -167,7 +171,7 @@ bool GameOfLife::isNumberInArray(size_t number, vector<size_t>& vec) {
 }
 
 bool GameOfLife::deserialization(const string& filename) {
-    std::ofstream stream(filename);
+    std::ofstream stream(filename+".txt");
     if (!stream.is_open()) {
         printf("Unable to write into a file %s!\n", filename.c_str());
         return false;
