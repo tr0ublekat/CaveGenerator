@@ -111,9 +111,9 @@ bool GameOfLife::randBool(unsigned int chance) {
     std::uniform_int_distribution<> dist(0, 100);
     unsigned int res = dist(gen);
     if (res >= chance) {
-        return true;
+        return false;
     }
-    return false;
+    return true;
 }
 void GameOfLife::setBS(std::initializer_list<size_t> B, std::initializer_list<size_t> S) {
 	this->B = B;

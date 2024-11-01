@@ -16,7 +16,7 @@ using namespace std;
 
 size_t mapSize = 200; // Размер карты по Х и Y. Можно менять от 4 до 1000
 float scale = 10.0f / float(mapSize); // Не трогать
-int chance = 53;
+unsigned int chance = 50;
 
 // Смещение камеры по Х и Y
 float x_offset = 0.0f;
