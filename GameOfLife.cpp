@@ -81,6 +81,17 @@ void GameOfLife::life() {
     deleteBorders();
 }
 
+void GameOfLife::fill(bool znach, unsigned int posX, unsigned int posY, unsigned int size) {
+    if (posX + size > this->mainMatrix.size() || posY + size > this->mainMatrix.size()) {
+        throw std::runtime_error("pos + size > matrix.size!\n");
+    }
+    for (unsigned int x = posX; x < posX + size; x++) {
+        for (unsigned int y = posY; y < posY + size; y++) {
+            this->mainMatrix[x][y] = znach;
+        }
+    }
+}
+
 void GameOfLife::deleteBorders() {
     for (size_t i = 0; i < size; ++i) {
         for (size_t j = 0; j < size; ++j) {

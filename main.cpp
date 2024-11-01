@@ -14,8 +14,16 @@
 
 using namespace std;
 
+
+int randomInt(int left, int right) {
+    static std::random_device rd;
+    static std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dist(left, right);
+    return dist(gen);
+}
+
 size_t mapSize = 200; // Размер карты по Х и Y. Можно менять от 4 до 1000
-float scale = 15.0f / float(mapSize); // Не трогать
+float scale = 10.0f / float(mapSize); // Не трогать
 unsigned int chance = 50;
 
 // Смещение камеры по Х и Y
@@ -29,7 +37,7 @@ void keyboard(unsigned char c, int x, int y);
 void simulation();
 
 
-GameOfLife gameOfLife(mapSize, 50);
+GameOfLife gameOfLife(mapSize, chance);
 
 
 // Отрисовка карты по вектору карты
@@ -39,7 +47,7 @@ void display() {
     glLoadIdentity();
 
     glScalef(0.01f + scale, 0.01f + scale, 0.01f + scale);
-    glTranslatef(-float(mapSize)/20 + x_offset, float(mapSize)/20 + y_offset, -float(mapSize)/20);
+    glTranslatef(-float(mapSize)/20 + x_offset, float(mapSize)/20 + y_offset, -float(mapSize)/10 + scale);
 
     float posX = 0;
     float posY = 0;
@@ -79,28 +87,20 @@ void display() {
 }
 
 void reshape(GLsizei width, GLsizei height) {
-    if (height == 0) height = 1;
-    GLfloat aspect = (GLfloat) width / (GLfloat) height;
-
     glViewport(0, 0, width, height);
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    if (width >= height) {
-        gluOrtho2D(-1.0 * aspect, 1.0 * aspect, -1.0, 1.0);
-    } else {
-        gluOrtho2D(-1.0, 1.0, -1.0 / aspect, 1.0 / aspect);
-    }
+    gluPerspective(60.0f, (GLdouble)width / (GLdouble)height, 0.1f, 100.0f);
+    glutPostRedisplay();
 }
 
 void keyboard(unsigned char c, int x, int y) {
     if (c == '+') {
-        scale += 0.005f;
-        if (scale >= 10) scale = 10;
+        scale += 0.5f;
     }
     else if (c == '-') {
-        scale -= 0.005f;
-        if (scale <= 0.005f) scale = 0.005f;
+        scale -= 0.5f;
     }
     else if (c == 'w') {
         y_offset -= 0.1f;
@@ -134,7 +134,7 @@ void keyboard(unsigned char c, int x, int y) {
     else if (c == '2') {
         mapSize = 100;
         scale = 15.0f / float(mapSize);
-        gameOfLife = GameOfLife(mapSize, chance);
+        gameOfLife = GameOfLife(mapSize, chance-2);
         gameOfLife.setB(5, 8);
         gameOfLife.setS(4, 8);
     }
@@ -168,6 +168,14 @@ void keyboard(unsigned char c, int x, int y) {
     }
     else if (c == 27) {
         glutDestroyWindow(glutGetWindow());
+    }
+    else if (c == 9) {
+        for (int x = 0; x < 100; x++) {
+            unsigned int sizeX = unsigned int(randomInt(0, mapSize - 2));
+            unsigned int sizeY = unsigned int(randomInt(0, mapSize - 2));
+            //gameOfLife.fill(bool(randomInt(0, 1)), sizeX, sizeY, unsigned(randomInt(0, mapSize / 10 - randomInt(0, mapSize/20))));
+            gameOfLife.fill(bool(randomInt(0, 1)), sizeX, sizeY, 2);
+        }
     }
 }
 

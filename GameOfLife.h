@@ -16,6 +16,7 @@ std::ostream& operator<<(std::ostream& stream, vector<Any> vec) {
 	return stream;
 }
 
+
 class GameOfLife {
 private:
 	vector<vector<bool>> mainMatrix;
@@ -30,12 +31,14 @@ private:
 	size_t getNeighbourCount(unsigned int i, unsigned int j);
 	void deleteBorders();
 	bool isNumberInArray(size_t number,vector<size_t> &arr);
-	void innerLife(size_t i, vector<bool>& row);
 public:
 	GameOfLife(size_t size, unsigned int chanceOfSpawn = 40);
 
 	void init();
 	void life();
+
+	void fill(bool znach, unsigned int posX, unsigned int posY, unsigned int size);
+	void fill(bool znach, unsigned int posX, unsigned int posY, unsigned int posXkon, unsigned int posYkon);
 
 	void setChance(unsigned int chance);
 	void setBS(std::initializer_list<size_t> B, std::initializer_list<size_t> S);
@@ -47,3 +50,7 @@ public:
 
 	bool deserialization(const string& filename = "../cave.txt");
 };
+
+// камера
+// замкнутые пещеры
+// импорт/экспорт
