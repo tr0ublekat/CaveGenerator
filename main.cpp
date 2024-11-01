@@ -16,6 +16,7 @@ using namespace std;
 
 size_t mapSize = 200; // Размер карты по Х и Y. Можно менять от 4 до 1000
 float scale = 10.0f / float(mapSize); // Не трогать
+int chance = 53;
 
 // Смещение камеры по Х и Y
 float x_offset = 0.0f;
@@ -121,6 +122,49 @@ void keyboard(unsigned char c, int x, int y) {
     }
     else if (c == '\\') {
         gameOfLife.deserialization();
+    }
+    else if (c == '1') {
+        mapSize = 20;
+        scale = 10.0f / float(mapSize);
+        gameOfLife = GameOfLife(mapSize, chance);
+        gameOfLife.setB(5, 8);
+        gameOfLife.setS(4, 8);
+
+    }
+    else if (c == '2') {
+        mapSize = 100;
+        scale = 10.0f / float(mapSize);
+        gameOfLife = GameOfLife(mapSize, chance);
+        gameOfLife.setB(5, 8);
+        gameOfLife.setS(4, 8);
+    }
+    else if (c == '3') {
+        mapSize = 200;
+        scale = 10.0f / float(mapSize);
+        gameOfLife = GameOfLife(mapSize, chance);
+        gameOfLife.setB(5, 8);
+        gameOfLife.setS(4, 8);
+    }
+    else if (c == '4') {
+        mapSize = 300;
+        scale = 10.0f / float(mapSize);
+        gameOfLife = GameOfLife(mapSize, chance);
+        gameOfLife.setB(5, 8);
+        gameOfLife.setS(4, 8);
+    }
+    else if (c == '5') {
+        mapSize = 500;
+        scale = 10.0f / float(mapSize);
+        gameOfLife = GameOfLife(mapSize, chance);
+        gameOfLife.setB(5, 8);
+        gameOfLife.setS(4, 8);
+    }
+    else if (c == '6') {
+        mapSize = 1000;
+        scale = 10.0f / float(mapSize);
+        gameOfLife = GameOfLife(mapSize, 50);
+        gameOfLife.setB(5, 8);
+        gameOfLife.setS(4, 8);
     }
 }
 
