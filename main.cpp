@@ -46,7 +46,7 @@ void display() {
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    glScalef(0.01f + scale, 0.01f + scale, 0.01f + scale);
+    //glScalef(0.01f + scale, 0.01f + scale, 0.01f + scale);
     glTranslatef(-float(mapSize)/20 + x_offset, float(mapSize)/20 + y_offset, -float(mapSize)/10 + scale);
 
     float posX = 0;
@@ -91,15 +91,15 @@ void reshape(GLsizei width, GLsizei height) {
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(60.0f, (GLdouble)width / (GLdouble)height, 0.1f, 100.0f);
+    gluPerspective(60.0f, (GLdouble)width / (GLdouble)height, (GLdouble)0.01, (GLdouble)100.0f);
     glutPostRedisplay();
 }
 
 void keyboard(unsigned char c, int x, int y) {
-    if (c == '+') {
+    if (c == '+' || c == '=') {
         scale += 0.5f;
     }
-    else if (c == '-') {
+    else if (c == '-' || c == '_') {
         scale -= 0.5f;
     }
     else if (c == 'w') {
@@ -171,8 +171,8 @@ void keyboard(unsigned char c, int x, int y) {
     }
     else if (c == 9) {
         for (int x = 0; x < 100; x++) {
-            unsigned int sizeX = unsigned int(randomInt(0, mapSize - 2));
-            unsigned int sizeY = unsigned int(randomInt(0, mapSize - 2));
+            unsigned int sizeX = (unsigned int)(randomInt(0, mapSize - 2));
+            unsigned int sizeY = (unsigned int)(randomInt(0, mapSize - 2));
             //gameOfLife.fill(bool(randomInt(0, 1)), sizeX, sizeY, unsigned(randomInt(0, mapSize / 10 - randomInt(0, mapSize/20))));
             gameOfLife.fill(bool(randomInt(0, 1)), sizeX, sizeY, 2);
         }
