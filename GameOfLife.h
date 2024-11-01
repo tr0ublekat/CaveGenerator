@@ -3,8 +3,8 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-//#include <thread>
 #include <functional>
+
 
 using std::vector, std::string, std::ifstream, std::ref;
 
@@ -39,6 +39,8 @@ public:
 
 	void fill(bool znach, unsigned int posX, unsigned int posY, unsigned int size);
 	//void fill(bool znach, unsigned int posX, unsigned int posY, unsigned int posXkon, unsigned int posYkon);
+
+	size_t getSize();
 
 	void setChance(unsigned int chance);
 	void setBS(std::initializer_list<size_t> B, std::initializer_list<size_t> S);
