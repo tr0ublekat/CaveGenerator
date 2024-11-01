@@ -15,7 +15,7 @@
 using namespace std;
 
 size_t mapSize = 200; // Размер карты по Х и Y. Можно менять от 4 до 1000
-float scale = 10.0f / float(mapSize); // Не трогать
+float scale = 15.0f / float(mapSize); // Не трогать
 unsigned int chance = 50;
 
 // Смещение камеры по Х и Y
@@ -124,37 +124,37 @@ void keyboard(unsigned char c, int x, int y) {
         gameOfLife.deserialization();
     }
     else if (c == '1') {
-        mapSize = 20;
-        scale = 10.0f / float(mapSize);
+        mapSize = 30;
+        scale = 15.0f / float(mapSize);
         gameOfLife = GameOfLife(mapSize, chance);
-        gameOfLife.setB(5, 8);
-        gameOfLife.setS(4, 8);
+        gameOfLife.setB(1, 3); // Генерирует лабиринты
+        gameOfLife.setS(0, 4); // 
 
     }
     else if (c == '2') {
         mapSize = 100;
-        scale = 10.0f / float(mapSize);
+        scale = 15.0f / float(mapSize);
         gameOfLife = GameOfLife(mapSize, chance);
         gameOfLife.setB(5, 8);
         gameOfLife.setS(4, 8);
     }
     else if (c == '3') {
         mapSize = 200;
-        scale = 10.0f / float(mapSize);
+        scale = 15.0f / float(mapSize);
         gameOfLife = GameOfLife(mapSize, chance);
         gameOfLife.setB(5, 8);
         gameOfLife.setS(4, 8);
     }
     else if (c == '4') {
         mapSize = 300;
-        scale = 10.0f / float(mapSize);
+        scale = 15.0f / float(mapSize);
         gameOfLife = GameOfLife(mapSize, chance);
         gameOfLife.setB(5, 8);
         gameOfLife.setS(4, 8);
     }
     else if (c == '5') {
         mapSize = 500;
-        scale = 10.0f / float(mapSize);
+        scale = 15.0f / float(mapSize);
         gameOfLife = GameOfLife(mapSize, chance);
         gameOfLife.setB(5, 8);
         gameOfLife.setS(4, 8);
@@ -165,6 +165,9 @@ void keyboard(unsigned char c, int x, int y) {
         gameOfLife = GameOfLife(mapSize, 50);
         gameOfLife.setB(5, 8);
         gameOfLife.setS(4, 8);
+    }
+    else if (c == 27) {
+        glutDestroyWindow(glutGetWindow());
     }
 }
 
@@ -181,7 +184,7 @@ int main(int argc, char **argv) {
     gameOfLife.setS(4, 8);
 
     glutInitDisplayMode(GLUT_DOUBLE);
-    glutInitWindowSize(1366, 780);
+    glutInitWindowSize(600, 600);
     glutInitWindowPosition(50, 50);
     glutCreateWindow("Cave generator");
 
