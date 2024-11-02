@@ -40,6 +40,8 @@ public:
 	void fill(bool znach, unsigned int posX, unsigned int posY, unsigned int size);
 	void fill(bool znach, unsigned int posX, unsigned int posY, unsigned int posXkon, unsigned int posYkon);
 
+	string getRules();
+
 	void setChance(unsigned int chance);
 	void setBS(std::initializer_list<size_t> B, std::initializer_list<size_t> S);
 	void setB(std::initializer_list<size_t> B);

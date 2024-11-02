@@ -110,16 +110,19 @@ void changeMap(size_t size) {
     gameOfLife.setB(5, 8);
     gameOfLife.setS(4, 8);
 
+    string rules = gameOfLife.getRules();
     string temp = to_string(chance);
-    glutSetWindowTitle(("Cave generator | " + temp + "% | B5678/S45678").c_str());
+    glutSetWindowTitle(("Cave generator | " + temp + "% | " + rules).c_str());
 }
 
 void changeMap() {
     gameOfLife = GameOfLife(mapSize, chance);
     gameOfLife.setB(5, 8);
     gameOfLife.setS(4, 8);
+
+    string rules = gameOfLife.getRules();
     string temp = to_string(chance);
-    glutSetWindowTitle(("Cave generator | " + temp + "% | B5678/S45678").c_str());
+    glutSetWindowTitle(("Cave generator | " + temp + "% | " + rules).c_str());
 }
 
 void keyboard(unsigned char c, int x, int y) {
@@ -184,6 +187,10 @@ void keyboard(unsigned char c, int x, int y) {
         gameOfLife = GameOfLife(mapSize, chance);
         gameOfLife.setB(3, 3);
         gameOfLife.setS(2, 3);
+
+        string rules = gameOfLife.getRules();
+        string temp = to_string(chance);
+        glutSetWindowTitle(("Cave generator | " + temp + "% | " + rules).c_str());
     }
     else if (c == 27) {
         glutDestroyWindow(glutGetWindow());
@@ -209,11 +216,12 @@ int main(int argc, char **argv) {
     //gameOfLife.setB({5,6,7,8}); // или так
     gameOfLife.setB(5, 8);
     gameOfLife.setS(4, 8);
+    string rules = gameOfLife.getRules();
 
     glutInitDisplayMode(GLUT_DOUBLE);
     glutInitWindowSize(600, 600);
     glutInitWindowPosition(50, 50);
-    glutCreateWindow(("Cave generator | " + to_string(chance) + "% | B5678/S45678").c_str());
+    glutCreateWindow(("Cave generator | " + to_string(chance) + "% | " + rules).c_str());
 
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);

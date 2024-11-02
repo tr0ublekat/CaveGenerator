@@ -54,7 +54,7 @@ void GameOfLife::life() {
 
             if (this->mainMatrix[i][j]) {
                 if (isNumberInArray(neighbours, ref(S))) {
-                    // Ничего
+                    // пїЅпїЅпїЅпїЅпїЅпїЅ
                     row.push_back(true);
                 }
                 else {
@@ -68,7 +68,7 @@ void GameOfLife::life() {
                     row.push_back(true);
                 }
                 else {
-                    // Ничего
+                    // пїЅпїЅпїЅпїЅпїЅпїЅ
                     row.push_back(false);
                 }
             }
@@ -181,4 +181,16 @@ bool GameOfLife::deserialization(const string& filename) {
 
     stream.close();
     return true;
+}
+
+string GameOfLife::getRules() {
+    string res = "B";
+    for (auto& a: this->B){
+        res += std::to_string(a);
+    }
+    res+="/S";
+    for (auto& a: this->S){
+        res += std::to_string(a);
+    }
+    return res;
 }
