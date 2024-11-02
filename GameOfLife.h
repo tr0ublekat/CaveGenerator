@@ -45,12 +45,12 @@ public:
 	void setB(std::initializer_list<size_t> B);
 	void setB(size_t begin, size_t end);
 	void setS(std::initializer_list<size_t> S);
-	void setS(size_t begin, size_t end); // устанавливает B от begin до end. Например (1,5) будет 1,2,3,4,5
-	vector<vector<bool>>& operator()(); // Возвращает матрицу по ссылке для отрисовки
+	void setS(size_t begin, size_t end); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ B пїЅпїЅ begin пїЅпїЅ end. пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (1,5) пїЅпїЅпїЅпїЅпїЅ 1,2,3,4,5
+	vector<vector<bool>>& operator()(); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 
-	bool deserialization(const string& filename = "../cave.txt");
+	bool deserialization(const string& filename = "cave.txt");
 };
 
-// камера
-// замкнутые пещеры
-// импорт/экспорт
+// пїЅпїЅпїЅпїЅпїЅпїЅ
+// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+// пїЅпїЅпїЅпїЅпїЅпїЅ/пїЅпїЅпїЅпїЅпїЅпїЅпїЅ

@@ -15,6 +15,10 @@
 using namespace std;
 
 
+Добавить отличие при начальной инициализации, 3-ех итерациях и 10 итерациях в презентацию
+Про шанс начальной инициализации (что будет при 45% и например  55%)
+
+
 int randomInt(int left, int right) {
     static std::random_device rd;
     static std::mt19937 gen(rd());
@@ -22,8 +26,8 @@ int randomInt(int left, int right) {
     return dist(gen);
 }
 
-size_t mapSize = 200; // Размер карты по Х и Y. Можно менять от 4 до 1000
-float scale = 10.0f / float(mapSize); // Не трогать
+size_t mapSize = 100; // Размер карты по Х и Y. Можно менять от 4 до 1000
+float scale = 10.0f / float(mapSize);
 unsigned int chance = 50;
 
 // Смещение камеры по Х и Y
