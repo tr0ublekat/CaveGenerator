@@ -10,13 +10,14 @@
 #include <iostream>
 #include <vector>
 #include <random>
+#include <string>
 #include "GameOfLife.h"
 
 using namespace std;
 
 
-Добавить отличие при начальной инициализации, 3-ех итерациях и 10 итерациях в презентацию
-Про шанс начальной инициализации (что будет при 45% и например  55%)
+// Добавить отличие при начальной инициализации, 3-ех итерациях и 10 итерациях в презентацию
+// Про шанс начальной инициализации (что будет при 45% и например  55%)
 
 
 int randomInt(int left, int right) {
@@ -99,6 +100,28 @@ void reshape(GLsizei width, GLsizei height) {
     glutPostRedisplay();
 }
 
+void changeMap(size_t size) {
+    mapSize = size;   
+
+    if (size >= 0 && size <= 50) scale = 0;
+    else scale = 15.0f / float(mapSize);
+
+    gameOfLife = GameOfLife(mapSize, chance);
+    gameOfLife.setB(5, 8);
+    gameOfLife.setS(4, 8);
+
+    string temp = to_string(chance);
+    glutSetWindowTitle(("Cave generator | " + temp + "% | B5678/S45678").c_str());
+}
+
+void changeMap() {
+    gameOfLife = GameOfLife(mapSize, chance);
+    gameOfLife.setB(5, 8);
+    gameOfLife.setS(4, 8);
+    string temp = to_string(chance);
+    glutSetWindowTitle(("Cave generator | " + temp + "% | B5678/S45678").c_str());
+}
+
 void keyboard(unsigned char c, int x, int y) {
     if (c == '+' || c == '=') {
         scale += 0.5f;
@@ -118,6 +141,16 @@ void keyboard(unsigned char c, int x, int y) {
     else if (c == 'd') {
         x_offset -= 0.1f;
     }
+    else if (c == 'x') {
+        if (chance >= 99) return;
+        chance += 1;
+        changeMap();
+    }
+    else if (c == 'z') {
+        if (chance <= 1) return;
+        chance -= 1;
+        changeMap();
+    }
     else if (c == ' ') {
         gameOfLife.life();
     }
@@ -128,47 +161,22 @@ void keyboard(unsigned char c, int x, int y) {
         gameOfLife.deserialization();
     }
     else if (c == '1') {
-        mapSize = 30;
-        scale = 0;
-        gameOfLife = GameOfLife(mapSize, chance);
-        gameOfLife.setB(5, 8); // Генерирует лабиринты
-        gameOfLife.setS(4, 8); // 
-
+        changeMap(30);
     }
     else if (c == '2') {
-        mapSize = 100;
-        scale = 15.0f / float(mapSize);
-        gameOfLife = GameOfLife(mapSize, chance-2);
-        gameOfLife.setB(5, 8);
-        gameOfLife.setS(4, 8);
+        changeMap(100);
     }
     else if (c == '3') {
-        mapSize = 200;
-        scale = 15.0f / float(mapSize);
-        gameOfLife = GameOfLife(mapSize, chance);
-        gameOfLife.setB(5, 8);
-        gameOfLife.setS(4, 8);
+        changeMap(200);
     }
     else if (c == '4') {
-        mapSize = 300;
-        scale = 15.0f / float(mapSize);
-        gameOfLife = GameOfLife(mapSize, chance);
-        gameOfLife.setB(5, 8);
-        gameOfLife.setS(4, 8);
+        changeMap(300);
     }
     else if (c == '5') {
-        mapSize = 500;
-        scale = 15.0f / float(mapSize);
-        gameOfLife = GameOfLife(mapSize, chance);
-        gameOfLife.setB(5, 8);
-        gameOfLife.setS(4, 8);
+        changeMap(500);
     }
     else if (c == '6') {
-        mapSize = 1000;
-        scale = 10.0f / float(mapSize);
-        gameOfLife = GameOfLife(mapSize, 50);
-        gameOfLife.setB(5, 8);
-        gameOfLife.setS(4, 8);
+        changeMap(1000);
     }
     else if (c == '7') {
         mapSize = 200;
@@ -205,7 +213,7 @@ int main(int argc, char **argv) {
     glutInitDisplayMode(GLUT_DOUBLE);
     glutInitWindowSize(600, 600);
     glutInitWindowPosition(50, 50);
-    glutCreateWindow("Cave generator");
+    glutCreateWindow(("Cave generator | " + to_string(chance) + "% | B5678/S45678").c_str());
 
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
