@@ -20,14 +20,14 @@ using namespace std;
 // Про шанс начальной инициализации (что будет при 45% и например  55%)
 
 
-int randomInt(int left, int right) {
+static int randomInt(int left, int right) {
     static std::random_device rd;
     static std::mt19937 gen(rd());
     std::uniform_int_distribution<> dist(left, right);
     return dist(gen);
 }
 
-size_t mapSize = 100; // Размер карты по Х и Y. Можно менять от 4 до 1000
+size_t mapSize = 98 /*+2*/; // Размер карты по Х и Y. Можно менять от 4 до 1000
 float scale = 10.0f / float(mapSize);
 unsigned int chance = 50;
 
@@ -42,8 +42,10 @@ void keyboard(unsigned char c, int x, int y);
 void simulation();
 
 
-GameOfLife gameOfLife(mapSize, chance);
-
+GameOfLife gameOfLife(mapSize, &chance);
+// инициализация шанса на спавн по указателю на chance
+// по этому будет достаточно поменять переменную chance
+// без вызова метода setChance();
 
 // Отрисовка карты по вектору карты
 void display() {
@@ -52,7 +54,7 @@ void display() {
     glLoadIdentity();
 
     //glScalef(0.01f + scale, 0.01f + scale, 0.01f + scale);
-    glTranslatef(-float(mapSize)/20 + x_offset - 0.1, float(mapSize)/20 - y_offset, -float(mapSize)/10 + scale);
+    glTranslatef(-float(mapSize)/20 + x_offset - 0.1f, float(mapSize)/20 - y_offset, -float(mapSize)/10 + scale);
 
     float posX = 0;
     float posY = 0;
@@ -106,13 +108,10 @@ void changeMap(size_t size) {
     if (size >= 0 && size <= 50) scale = 0;
     else scale = 15.0f / float(mapSize);
 
-    gameOfLife = GameOfLife(mapSize, chance);
-    gameOfLife.setB(5, 8);
-    gameOfLife.setS(4, 8);
+    gameOfLife.reInit(size);
 
     string rules = gameOfLife.getRules();
-    string temp = to_string(chance);
-    glutSetWindowTitle(("Cave generator | " + temp + "% | " + rules).c_str());
+    glutSetWindowTitle(("Cave generator | " + rules).c_str());
 }
 
 void changeMap() {
@@ -154,6 +153,9 @@ void keyboard(unsigned char c, int x, int y) {
         chance -= 1;
         changeMap();
     }
+    else if (c == 'c') {
+        gameOfLife.stepBack();
+    }
     else if (c == ' ') {
         gameOfLife.life();
     }
@@ -184,13 +186,12 @@ void keyboard(unsigned char c, int x, int y) {
     else if (c == '7') {
         mapSize = 200;
         scale = 15.0f / float(mapSize);
-        gameOfLife = GameOfLife(mapSize, chance);
+        gameOfLife.reInit(mapSize);
         gameOfLife.setB(3, 3);
         gameOfLife.setS(2, 3);
 
         string rules = gameOfLife.getRules();
-        string temp = to_string(chance);
-        glutSetWindowTitle(("Cave generator | " + temp + "% | " + rules).c_str());
+        glutSetWindowTitle(("Cave generator | " + rules).c_str());
     }
     else if (c == 27) {
         glutDestroyWindow(glutGetWindow());
@@ -199,7 +200,6 @@ void keyboard(unsigned char c, int x, int y) {
         for (int x = 0; x < 100; x++) {
             unsigned int sizeX = (unsigned int)(randomInt(0, mapSize - 2));
             unsigned int sizeY = (unsigned int)(randomInt(0, mapSize - 2));
-            //gameOfLife.fill(bool(randomInt(0, 1)), sizeX, sizeY, unsigned(randomInt(0, mapSize / 10 - randomInt(0, mapSize/20))));
             gameOfLife.fill(bool(randomInt(0, 1)), sizeX, sizeY, 2);
         }
     }
@@ -221,7 +221,7 @@ int main(int argc, char **argv) {
     glutInitDisplayMode(GLUT_DOUBLE);
     glutInitWindowSize(600, 600);
     glutInitWindowPosition(50, 50);
-    glutCreateWindow(("Cave generator | " + to_string(chance) + "% | " + rules).c_str());
+    glutCreateWindow(("Cave generator | " + rules).c_str());
 
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
