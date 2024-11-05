@@ -274,9 +274,8 @@ void GameOfLife::saveToBMP(const string& filename) {
         else {
             ++j;
         }
-
-        image.save(filename);
-
     }
-   
+
+    image.save(filename);
+    std::cout << "Вывод в файл завершен!" << std::endl;
 }
