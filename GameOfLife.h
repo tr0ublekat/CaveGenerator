@@ -47,7 +47,7 @@ private:
 
 
 	bool randBool(uint chance = 50);
-	size_t getNeighbourCount(uint i, uint j);
+	size_t getNeighbourCount(uint i, uint j) noexcept;
 	void deleteBorders();
 	bool isNumberInArray(size_t number,vector<size_t> &arr);
 	uint iterations = 0;

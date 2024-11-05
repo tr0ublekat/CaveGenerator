@@ -5,7 +5,7 @@ GameOfLife::GameOfLife(size_t size, uint chance) {
 	for (auto& a : this->mainMatrix)
 		a.reserve(size+2);
 	this->chance = chance;
-    this->size = size + 2;
+    this->size = size;
     this->init();
 }
 GameOfLife::GameOfLife(size_t size, uint *chance) {
@@ -13,7 +13,7 @@ GameOfLife::GameOfLife(size_t size, uint *chance) {
 	for (auto& a : this->mainMatrix)
 		a.reserve(size+2);
 	this->chance = *chance;
-    this->size = size + 2;
+    this->size = size;
     this->init();
 }
 
@@ -138,7 +138,7 @@ void GameOfLife::deleteBorders() {
     }
 }
 
-size_t GameOfLife::getNeighbourCount(uint i, uint j) {
+size_t GameOfLife::getNeighbourCount(uint i, uint j) noexcept {
     size_t count = 0;
     if (this->mainMatrix[i - 1][j - 1]) ++count;
     if (this->mainMatrix[i][j - 1]) ++count;
@@ -236,7 +236,7 @@ string GameOfLife::getRules() {
         res += std::to_string(a);
     }
     res += " | map size: ";
-    res += std::to_string(int(this->size));
+    res += std::to_string(int(this->mainMatrix.size()));
     return res;
 }
 
@@ -265,5 +265,5 @@ void GameOfLife::saveToBMP(const string& filename) {
         }
     }
     image.save(filename);
-    printf("Вывод в файл %s завершен!\n", filename.c_str());
+    printf("File %s saved!\n", filename.c_str());
 }

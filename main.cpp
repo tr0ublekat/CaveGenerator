@@ -29,7 +29,7 @@ static int randomInt(int left, int right) {
     return dist(gen);
 }
 
-size_t mapSize = 98 /*+2*/; // Размер карты по Х и Y. Можно менять от 4 до 1000
+size_t mapSize = 100; // Размер карты по Х и Y. Можно менять от 4 до 1000
 float scale = 10.0f / float(mapSize);
 unsigned int chance = 50;
 
@@ -119,7 +119,7 @@ void changeMap(size_t size) {
     y_offset = 0;
 }
 
-void changeMap() {
+static void changeMap() noexcept {
     gameOfLife = GameOfLife(mapSize, chance);
     gameOfLife.setB(5, 8);
     gameOfLife.setS(4, 8);
