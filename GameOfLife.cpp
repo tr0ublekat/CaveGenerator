@@ -256,11 +256,27 @@ void GameOfLife::saveToBMP(const string& filename) {
                 pixels.push_back(colorWHITE);
         }
     }
-    for (size_t x = 0; x < this->mainMatrix.size(); ++x) {
-        for (size_t y = 0; y < this->mainMatrix[x].size(); ++y) {
 
-            image[x][y] = colorBLACK;
+    int i = 0, j = 0;
+    for (bmp::Pixel &pixel: image) {
+        
+        if (this->mainMatrix[i][j]) {
+            pixel = colorBLACK;
         }
+        else {
+            pixel = colorWHITE;
+        }
+
+        if (j == this->mainMatrix.size() - 1) {
+            j = 0;
+            i++;
+        } 
+        else {
+            ++j;
+        }
+
+        image.save(filename);
+
     }
    
 }

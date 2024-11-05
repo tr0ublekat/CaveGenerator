@@ -162,7 +162,7 @@ void keyboard(unsigned char c, int x, int y) {
         gameOfLife.init();
     }
     else if (c == '\\') {
-        gameOfLife.deserialization();
+        gameOfLife.saveToBMP("out.bmp");
     }
     else if (c == '1') {
         changeMap(30);
