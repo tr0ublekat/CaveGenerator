@@ -120,8 +120,7 @@ void changeMap() {
     gameOfLife.setS(4, 8);
 
     string rules = gameOfLife.getRules();
-    string temp = to_string(chance);
-    glutSetWindowTitle(("Cave generator | " + temp + "% | " + rules).c_str());
+    glutSetWindowTitle(("Cave generator | " + rules).c_str());
 }
 
 void keyboard(unsigned char c, int x, int y) {
