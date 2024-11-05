@@ -246,17 +246,6 @@ void GameOfLife::saveToBMP(const string& filename) {
 
     bmp::Bitmap image(this->mainMatrix.size(), this->mainMatrix[0].size());
 
-    vector<bmp::Pixel> pixels{};
-    for (auto& a : this->mainMatrix) {
-        for (auto pixel : a) {
-            if (pixel == true) {
-                pixels.push_back(colorBLACK);
-            }
-            else
-                pixels.push_back(colorWHITE);
-        }
-    }
-
     int i = 0, j = 0;
     for (bmp::Pixel &pixel: image) {
         
