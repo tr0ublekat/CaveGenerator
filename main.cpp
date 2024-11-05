@@ -1,21 +1,23 @@
 #ifdef _WIN32
     #include "windows.h"
     #include "includes.h"
+    #define PATH "../"
     // Windows
 #else
     #include <GL/glut.h>
+    #define PATH ""
     // Unix
 #endif _WIN32
 
 #include <iostream>
+#include <string>
 #include <vector>
 #include <random>
-#include <string>
 #include "GameOfLife.h"
 
 using namespace std;
 
-
+const string filename = "out.bmp";
 // Добавить отличие при начальной инициализации, 3-ех итерациях и 10 итерациях в презентацию
 // Про шанс начальной инициализации (что будет при 45% и например  55%)
 
@@ -170,7 +172,7 @@ void keyboard(unsigned char c, int x, int y) {
         y_offset = 0;
     }
     else if (c == '\\') {
-        gameOfLife.saveToBMP("out.bmp");
+        gameOfLife.saveToBMP(PATH + filename);
     }
     else if (c == '1') {
         changeMap(30);
@@ -217,6 +219,7 @@ void simulation() {
 }
 
 int main(int argc, char **argv) {
+    setlocale(0, "");
     glutInit(&argc, argv);
 
     //gameOfLife.setBS({5, 6, 7, 8}, {4, 5, 6, 7, 8}); // можно и так

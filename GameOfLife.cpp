@@ -247,8 +247,8 @@ void GameOfLife::saveToBMP(const string& filename) {
     bmp::Bitmap image(this->mainMatrix.size(), this->mainMatrix[0].size());
 
     int i = 0, j = 0;
-    for (bmp::Pixel &pixel: image) {
-        
+    for (bmp::Pixel& pixel : image) {
+
         if (this->mainMatrix[i][j]) {
             pixel = colorBLACK;
         }
@@ -259,12 +259,11 @@ void GameOfLife::saveToBMP(const string& filename) {
         if (j == this->mainMatrix.size() - 1) {
             j = 0;
             i++;
-        } 
+        }
         else {
             ++j;
         }
     }
-
     image.save(filename);
-    std::cout << "Вывод в файл завершен!" << std::endl;
+    printf("Вывод в файл %s завершен!\n", filename.c_str());
 }
