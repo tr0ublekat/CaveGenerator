@@ -239,3 +239,28 @@ string GameOfLife::getRules() {
     res += std::to_string(int(this->size));
     return res;
 }
+
+void GameOfLife::saveToBMP(const string& filename) {
+    static bmp::Pixel colorWHITE{ 255,255,255 };
+    static bmp::Pixel colorBLACK{ 0,0,0 };
+
+    bmp::Bitmap image(this->mainMatrix.size(), this->mainMatrix[0].size());
+
+    vector<bmp::Pixel> pixels{};
+    for (auto& a : this->mainMatrix) {
+        for (auto pixel : a) {
+            if (pixel == true) {
+                pixels.push_back(colorBLACK);
+            }
+            else
+                pixels.push_back(colorWHITE);
+        }
+    }
+    for (size_t x = 0; x < this->mainMatrix.size(); ++x) {
+        for (size_t y = 0; y < this->mainMatrix[x].size(); ++y) {
+
+            image[x][y] = colorBLACK;
+        }
+    }
+   
+}

@@ -6,6 +6,8 @@
 //#include <thread>
 #include <functional>
 
+#include "BitmapPlusPlus.hpp"
+
 using uint = unsigned int;
 
 using std::vector, std::string, std::ifstream, std::ref;
@@ -73,6 +75,7 @@ public:
 	vector<vector<bool>>& operator()(); // ���������� ������� �� ������ ��� ���������
 
 	bool deserialization(const string& filename = "cave.txt");
+	void saveToBMP(const string& filename = "cave.bmp");
 };
 
 // ������
