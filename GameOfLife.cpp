@@ -20,7 +20,6 @@ GameOfLife::GameOfLife(size_t size, uint *chance) {
 void GameOfLife::init() {
     this->mainMatrix.clear();
     for (size_t i = 0; i < size; ++i) {
-
         vector<bool> row;
         row.clear();
         row.reserve(size);

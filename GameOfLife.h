@@ -50,12 +50,14 @@ private:
 	size_t getNeighbourCount(uint i, uint j) noexcept;
 	void deleteBorders();
 	bool isNumberInArray(size_t number,vector<size_t> &arr);
+
+	void init();
+
 	uint iterations = 0;
 public:
 	GameOfLife(size_t size, uint chanceOfSpawn = 40);
 	GameOfLife(size_t size, uint *chanceOfSpawn); // инициализация по указателю на шанс появления
 
-	void init();
 	void reInit(size_t size);
 	void reInit(size_t size, uint chanceOfSpawn);
 	void life();

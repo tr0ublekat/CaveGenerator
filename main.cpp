@@ -115,8 +115,8 @@ void changeMap(size_t size) {
     string rules = gameOfLife.getRules();
     glutSetWindowTitle(("Cave generator | " + rules).c_str());
 
-    x_offset = 0;
-    y_offset = 0;
+    x_offset = 0.1f;
+    y_offset = 0.1f;
 }
 
 static void changeMap() noexcept {
@@ -127,8 +127,8 @@ static void changeMap() noexcept {
     string rules = gameOfLife.getRules();
     glutSetWindowTitle(("Cave generator | " + rules).c_str());
 
-    x_offset = 0;
-    y_offset = 0;
+    x_offset = +0.1f;
+    y_offset = +0.1f;
 }
 
 void keyboard(unsigned char c, int x, int y) {
@@ -167,9 +167,9 @@ void keyboard(unsigned char c, int x, int y) {
         gameOfLife.life();
     }
     else if (c == 'n') {
-        gameOfLife.init();
-        x_offset = 0;
-        y_offset = 0;
+        gameOfLife.reInit(mapSize);
+        x_offset = +0.1f;
+        y_offset = +0.1f;
     }
     else if (c == '\\') {
         gameOfLife.saveToBMP(PATH + filename);
