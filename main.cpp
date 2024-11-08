@@ -138,6 +138,28 @@ void keyboard(unsigned char c, int x, int y) {
     else if (c == '-' || c == '_') {
         scale -= 0.5f;
     }
+    else if (c == '[') {
+        gameOfLife = GameOfLife(mapSize, chance);
+        gameOfLife.setB(5, 8);
+        gameOfLife.setS(4, 8);
+        
+        string rules = gameOfLife.getRules();
+        glutSetWindowTitle(("Cave generator | " + rules).c_str());
+
+        x_offset = +0.1f;
+        y_offset = +0.1f;
+    }
+    else if (c == ']') {
+        gameOfLife = GameOfLife(mapSize, chance);
+        gameOfLife.setB(3, 3);
+        gameOfLife.setS(2, 3);
+        
+        string rules = gameOfLife.getRules();
+        glutSetWindowTitle(("Cave generator | " + rules).c_str());
+
+        x_offset = +0.1f;
+        y_offset = +0.1f;
+    }
     else if (c == 'w') {
         y_offset += 0.1f;
     }
