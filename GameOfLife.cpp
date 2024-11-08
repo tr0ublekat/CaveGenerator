@@ -1,18 +1,25 @@
 #include "GameOfLife.h"
 
-GameOfLife::GameOfLife(size_t size, unsigned int chance) {
+GameOfLife::GameOfLife(size_t size, uint chance) {
 	this->mainMatrix.reserve(size+2);
 	for (auto& a : this->mainMatrix)
 		a.reserve(size+2);
 	this->chance = chance;
-    this->size = size + 2;
+    this->size = size;
+    this->init();
+}
+GameOfLife::GameOfLife(size_t size, uint *chance) {
+	this->mainMatrix.reserve(size+2);
+	for (auto& a : this->mainMatrix)
+		a.reserve(size+2);
+	this->chance = *chance;
+    this->size = size;
     this->init();
 }
 
 void GameOfLife::init() {
     this->mainMatrix.clear();
     for (size_t i = 0; i < size; ++i) {
-
         vector<bool> row;
         row.clear();
         row.reserve(size);
@@ -31,7 +38,24 @@ void GameOfLife::init() {
     }
 }
 
+void GameOfLife::reInit(size_t size) {
+    this->size = size;
+    this->backupMatrix.clear();
+    this->secondMatrix.clear();
+    this->init();
+}
+void GameOfLife::reInit(size_t size, uint chanceOfSpawn) {
+    this->size = size;
+    this->chance = chanceOfSpawn;
+    this->backupMatrix.clear();
+    this->secondMatrix.clear();
+    this->init();
+}
+
+
 void GameOfLife::life() {
+    backupMatrix.reserve(iterations + 1); // РјР± РґР°Р¶Рµ Р»РёС€РЅРµРµ
+    backupMatrix.push_back(mainMatrix);
     this->secondMatrix.clear();
     if (B.size() == 0)
         throw std::runtime_error("B rules is empty!");
@@ -54,7 +78,7 @@ void GameOfLife::life() {
 
             if (this->mainMatrix[i][j]) {
                 if (isNumberInArray(neighbours, ref(S))) {
-                    // Ничего
+                    // пїЅпїЅпїЅпїЅпїЅпїЅ
                     row.push_back(true);
                 }
                 else {
@@ -68,7 +92,7 @@ void GameOfLife::life() {
                     row.push_back(true);
                 }
                 else {
-                    // Ничего
+                    // пїЅпїЅпїЅпїЅпїЅпїЅ
                     row.push_back(false);
                 }
             }
@@ -79,16 +103,27 @@ void GameOfLife::life() {
     this->mainMatrix.clear();
     this->mainMatrix = this->secondMatrix;
     deleteBorders();
+    this->iterations++;
 }
 
-void GameOfLife::fill(bool znach, unsigned int posX, unsigned int posY, unsigned int size) {
+void GameOfLife::fill(bool znach, uint posX, uint posY, uint size) {
     if (posX + size > this->mainMatrix.size() || posY + size > this->mainMatrix.size()) {
         throw std::runtime_error("pos + size > matrix.size!\n");
     }
-    for (unsigned int x = posX; x < posX + size; x++) {
-        for (unsigned int y = posY; y < posY + size; y++) {
+    for (uint x = posX; x < posX + size; x++) {
+        for (uint y = posY; y < posY + size; y++) {
             this->mainMatrix[x][y] = znach;
         }
+    }
+    this->iterations++;
+}
+
+void GameOfLife::stepBack() {
+    if (this->iterations > 0 && this->backupMatrix.size() > 0) {
+        this->mainMatrix = this->backupMatrix.back();
+        this->backupMatrix.pop_back();
+        this->iterations--;
+        this->deleteBorders();
     }
 }
 
@@ -102,7 +137,7 @@ void GameOfLife::deleteBorders() {
     }
 }
 
-size_t GameOfLife::getNeighbourCount(unsigned int i, unsigned int j) {
+size_t GameOfLife::getNeighbourCount(uint i, uint j) noexcept {
     size_t count = 0;
     if (this->mainMatrix[i - 1][j - 1]) ++count;
     if (this->mainMatrix[i][j - 1]) ++count;
@@ -116,11 +151,11 @@ size_t GameOfLife::getNeighbourCount(unsigned int i, unsigned int j) {
     return count;
 }
 
-bool GameOfLife::randBool(unsigned int chance) {
+bool GameOfLife::randBool(uint chance) {
     static std::random_device rd;
     static std::mt19937 gen(rd());
     std::uniform_int_distribution<> dist(0, 100);
-    unsigned int res = dist(gen);
+    uint res = dist(gen);
     if (res >= chance) {
         return false;
     }
@@ -143,22 +178,23 @@ void GameOfLife::setS(std::initializer_list<size_t> arr) {
 }
 
 void GameOfLife::setB(size_t begin, size_t end) {
+    if (this->B.size() > 0) this->B.clear();
     for (size_t x = begin; x <= end; x++) {
         this->B.push_back(x);
     }
 }
 void GameOfLife::setS(size_t begin, size_t end) {
+    if (this->S.size() > 0) this->S.clear();
     for (size_t x = begin; x <= end; x++) {
         this->S.push_back(x);
     }
 }
 
-size_t GameOfLife::getSize() {
-    return this->mainMatrix.size();
-}
-
-void GameOfLife::setChance(unsigned int chance) {
+void GameOfLife::setChance(uint chance) {
     this->chance = chance;
+}
+void GameOfLife::setChance(uint *chance) {
+    this->chance = *chance;
 }
 
 bool GameOfLife::isNumberInArray(size_t number, vector<size_t>& vec) {
@@ -171,7 +207,7 @@ bool GameOfLife::isNumberInArray(size_t number, vector<size_t>& vec) {
 }
 
 bool GameOfLife::deserialization(const string& filename) {
-    std::ofstream stream(filename+".txt");
+    std::ofstream stream(filename);
     if (!stream.is_open()) {
         printf("Unable to write into a file %s!\n", filename.c_str());
         return false;
@@ -185,4 +221,48 @@ bool GameOfLife::deserialization(const string& filename) {
 
     stream.close();
     return true;
+}
+
+string GameOfLife::getRules() {
+    string res = "chance: ";
+    res += std::to_string(int(this->chance));
+    res += "% | B";
+    for (auto& a: this->B){
+        res += std::to_string(a);
+    }
+    res+="/S";
+    for (auto& a: this->S){
+        res += std::to_string(a);
+    }
+    res += " | map size: ";
+    res += std::to_string(int(this->mainMatrix.size()));
+    return res;
+}
+
+void GameOfLife::saveToBMP(const string& filename) {
+    static bmp::Pixel colorWHITE{ 255,255,255 };
+    static bmp::Pixel colorBLACK{ 0,0,0 };
+
+    bmp::Bitmap image(this->mainMatrix.size(), this->mainMatrix[0].size());
+
+    int i = 0, j = 0;
+    for (bmp::Pixel& pixel : image) {
+
+        if (this->mainMatrix[i][j]) {
+            pixel = colorBLACK;
+        }
+        else {
+            pixel = colorWHITE;
+        }
+
+        if (j == this->mainMatrix.size() - 1) {
+            j = 0;
+            i++;
+        }
+        else {
+            ++j;
+        }
+    }
+    image.save(filename);
+    printf("File %s saved!\n", filename.c_str());
 }

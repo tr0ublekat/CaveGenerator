@@ -26,5 +26,8 @@
     <ClInclude Include="..\GameOfLife.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="..\BitmapPlusPlus.hpp">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
