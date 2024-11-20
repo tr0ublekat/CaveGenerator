@@ -140,7 +140,7 @@ void GameOfLife::life() noexcept {
         this->secondMatrix.resize(mainMatrix.size());
         THREADS.push_back(std::thread([left, right, thisPtr = this]() {
             thisPtr->multiThreadLife(left, right);
-        }));
+            }));
     }
 
     for (auto& thread : THREADS) {
@@ -154,7 +154,7 @@ void GameOfLife::life() noexcept {
     //auto timeP = std::chrono::high_resolution_clock::now();
     //auto duration = std::chrono::duration<double>(timeP - timeN);
     //printf("generation time: %f s\n", duration.count());
-
+}
 void GameOfLife::fill(bool znach, uint posX, uint posY, uint size) noexcept {
     if (posX + size > this->mainMatrix.size() || posY + size > this->mainMatrix.size()) {
         printf("pos + size > matrix.size!\n");
