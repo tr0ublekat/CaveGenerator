@@ -61,37 +61,24 @@ void display() {
     float posX = 0;
     float posY = 0;
     vector<vector<bool>>& temp = gameOfLife();
-    for (size_t i = 0; i < temp.size(); i++) {
-        for (size_t j = 0; j < temp.size(); j++) {
-            if (temp[i][j]) {
-                glPushMatrix();
-                glBegin(GL_QUADS);
-                glColor3f(0.0f, 0.0f, 0.0f);
-                glVertex2f(0.0f+posX, 0.0f-posY);
-                glVertex2f(0.1f+posX, 0.0f-posY);
-                glVertex2f(0.1f+posX, 0.1f-posY);
-                glVertex2f(0.0f+posX, 0.1f-posY);
-                glEnd();
-                glPopMatrix();
-            }
-            else {
-                glPushMatrix();
-                glBegin(GL_QUADS);
-                glColor3f(1.0f, 1.0f, 1.0f);
-                glVertex2f(0.0f+posX, 0.0f-posY);
-                glVertex2f(0.1f+posX, 0.0f-posY);
-                glVertex2f(0.1f+posX, 0.1f-posY);
-                glVertex2f(0.0f+posX, 0.1f-posY);
-                glEnd();
-                glPopMatrix();
-            }
 
+    for (auto& x : temp) {
+        for (auto y : x) {
+            glPushMatrix();
+            glBegin(GL_QUADS);
+            float color = float(int(!y));           // Преобразование true -> 0.0f и false -> 1.0f
+            glColor3f(color, color, color);
+            glVertex2f(0.0f + posX, 0.0f - posY);
+            glVertex2f(0.1f + posX, 0.0f - posY);
+            glVertex2f(0.1f + posX, 0.1f - posY);
+            glVertex2f(0.0f + posX, 0.1f - posY);
+            glEnd();
+            glPopMatrix();
             posX += 0.1f;
         }
         posX = 0.0f;
         posY += 0.1f;
     }
-
     glutSwapBuffers();
 }
 
@@ -104,7 +91,7 @@ void reshape(GLsizei width, GLsizei height) {
     glutPostRedisplay();
 }
 
-void changeMap(size_t size) {
+static void changeMap(size_t size) {
     mapSize = size;   
 
     if (size >= 0 && size <= 50) scale = 0;
@@ -120,7 +107,7 @@ void changeMap(size_t size) {
 }
 
 static void changeMap() noexcept {
-    gameOfLife = GameOfLife(mapSize, chance);
+    gameOfLife.reInit(mapSize, chance);
     gameOfLife.setB(5, 8);
     gameOfLife.setS(4, 8);
 
@@ -197,7 +184,7 @@ void keyboard(unsigned char c, int x, int y) {
         gameOfLife.saveToBMP(PATH + filename);
     }
     else if (c == '1') {
-        changeMap(30);
+        changeMap(10);
     }
     else if (c == '2') {
         changeMap(100);
@@ -241,6 +228,7 @@ void simulation() {
 }
 
 int main(int argc, char **argv) {
+    GameOfLife::setThreadCount(4);
     setlocale(0, "");
     glutInit(&argc, argv);
 

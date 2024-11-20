@@ -3,14 +3,19 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-//#include <thread>
 #include <functional>
+
+#include <thread>
+#include <array>
+#include <iterator>
+#include <utility>
 
 #include "BitmapPlusPlus.hpp"
 
 using uint = unsigned int;
 
-using std::vector, std::string, std::ifstream, std::ref;
+using std::vector, std::string, std::ifstream, std::ref,
+std::array, std::pair, std::thread;
 
 template<typename Any>
 std::ostream& operator<<(std::ostream& stream, const std::vector<Any>& vec) {
@@ -54,15 +59,19 @@ private:
 	void init();
 
 	uint iterations = 0;
+
+	void multiThreadLife(uint top, uint bot);
+	static uint THREADS_COUNT;
 public:
 	GameOfLife(size_t size, uint chanceOfSpawn = 40);
 	GameOfLife(size_t size, uint *chanceOfSpawn); // инициализация по указателю на шанс появления
 
 	void reInit(size_t size);
 	void reInit(size_t size, uint chanceOfSpawn);
-	void life();
+	void life() noexcept;
 
-	void fill(bool znach, uint posX, uint posY, uint size);
+	void fill(bool znach, uint posX, uint posY, uint size) noexcept;
+	static void setThreadCount(uint count);
 
 	string getRules();
 	void stepBack();
