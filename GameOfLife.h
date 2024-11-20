@@ -79,7 +79,3 @@ public:
 	bool deserialization(const string& filename = "cave.txt");
 	void saveToBMP(const string& filename = "cave.bmp");
 };
-
-// ������
-// ��������� ������
-// ������/�������

@@ -250,6 +250,8 @@ int main(int argc, char **argv) {
     gameOfLife.setS(4, 8);
     string rules = gameOfLife.getRules();
 
+    GameOfLife::setThreadCount(0);          // 0 для количества потоков по системе
+
     glutInitDisplayMode(GLUT_DOUBLE);
     glutInitWindowSize(600, 600);
     glutInitWindowPosition(50, 50);
