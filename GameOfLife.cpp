@@ -54,6 +54,10 @@ void GameOfLife::reInit(size_t size, uint chanceOfSpawn) {
 }
 
 void GameOfLife::setThreadCount(uint count) {
+    if (count == 0) {
+        GameOfLife::THREADS_COUNT = std::thread::hardware_concurrency();
+        return;
+    }
     GameOfLife::THREADS_COUNT = count;
 }
 
@@ -93,7 +97,6 @@ void GameOfLife::multiThreadLife(uint top, uint bot) {
 }
 
 void GameOfLife::life() noexcept {
-    auto timeN = std::chrono::high_resolution_clock::now();
     backupMatrix.reserve(iterations + 1); // мб даже лишнее
     backupMatrix.push_back(mainMatrix);
     this->secondMatrix.clear();
@@ -148,11 +151,9 @@ void GameOfLife::life() noexcept {
     deleteBorders();
     this->iterations++;
 
-
-    auto timeP = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration<double>(timeP - timeN);
-    printf("generation time: %f s\n", duration.count());
-}
+    //auto timeP = std::chrono::high_resolution_clock::now();
+    //auto duration = std::chrono::duration<double>(timeP - timeN);
+    //printf("generation time: %f s\n", duration.count());
 
 void GameOfLife::fill(bool znach, uint posX, uint posY, uint size) noexcept {
     if (posX + size > this->mainMatrix.size() || posY + size > this->mainMatrix.size()) {
