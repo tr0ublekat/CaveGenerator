@@ -1,4 +1,5 @@
 #include "GameOfLife.h"
+uint GameOfLife::THREADS_COUNT = 2;
 
 GameOfLife::GameOfLife(size_t size, uint chance) {
 	this->mainMatrix.reserve(size+2);
@@ -52,63 +53,111 @@ void GameOfLife::reInit(size_t size, uint chanceOfSpawn) {
     this->init();
 }
 
+void GameOfLife::setThreadCount(uint count) {
+    GameOfLife::THREADS_COUNT = count;
+}
 
-void GameOfLife::life() {
-    backupMatrix.reserve(iterations + 1); // мб даже лишнее
-    backupMatrix.push_back(mainMatrix);
-    this->secondMatrix.clear();
-    if (B.size() == 0)
-        throw std::runtime_error("B rules is empty!");
-    if (S.size() == 0)
-        throw std::runtime_error("S rules is empty!");
-    for (size_t i = 0; i < size; i++) {
-
+void GameOfLife::multiThreadLife(uint top, uint bot) {
+    uint pos = top; // pos = y
+    while (pos != bot) {
         vector<bool> row;
-        row.clear();
-        row.reserve(size);
-
-        for (size_t j = 0; j < size; j++) {
-
-            if ((i == 0) || (j == 0) || (i == size - 1) || (j == size - 1)) {
+        row.reserve(mainMatrix.size());
+        for (uint i = 0; i < mainMatrix.size(); i++) {      // i = x
+            if (pos == 0 || pos == mainMatrix.size() - 1 || i == 0 || i == mainMatrix.size() - 1) {
                 row.push_back(false);
                 continue;
             }
-
-            size_t neighbours = getNeighbourCount(i, j);
-
-            if (this->mainMatrix[i][j]) {
+            size_t neighbours = getNeighbourCount(pos, i);
+                
+                
+            if (this->mainMatrix[pos][i]) {
                 if (isNumberInArray(neighbours, ref(S))) {
-                    // ������
                     row.push_back(true);
                 }
                 else {
-                    // map[i][j] = false;
                     row.push_back(false);
                 }
             }
             else {
                 if (isNumberInArray(neighbours, ref(B))) {
-                    // map[i][j] = true;
                     row.push_back(true);
                 }
                 else {
-                    // ������
                     row.push_back(false);
                 }
             }
         }
-        this->secondMatrix.push_back(row);
+        secondMatrix[pos] = row;
+        pos++;
+    }
+}
+
+void GameOfLife::life() noexcept {
+    auto timeN = std::chrono::high_resolution_clock::now();
+    backupMatrix.reserve(iterations + 1); // мб даже лишнее
+    backupMatrix.push_back(mainMatrix);
+    this->secondMatrix.clear();
+    if (B.size() == 0) {
+        printf("B rules is empty!");
+        return;
+    }
+    if (S.size() == 0) {
+        printf("S rules is empty!");
+        return;
+    }
+    const uint THREADS_COUNT = GameOfLife::THREADS_COUNT;
+    /* RYZEN 7 5700X3D 4.05Ghz / 3466 16-8-20-21 8*4
+    500:
+        DEBUG BUILD - работает ОЧЕНЬ медленно
+        3.25с ST
+        2.27с 2 THREAD
+        2.37с 3 THREAD
+        2.58с 4 THREAD
+        2.76с 5 THREAD
+        ...
+        6.62с 16 THREAD
+        При Release сборке работает моментально
+    1000:
+        Release BUILD
+        0.03с ST
+        0.016 2 THREAD
+        0.012 3 THREAD
+        0.011 4 THREAD
+        ---------------
+        Включение второго потока ускоряет вычисление вполовину
+    */
+    const uint CHUNK_SIZE = (mainMatrix.size() / THREADS_COUNT) + 1;
+    vector<std::thread> THREADS;
+
+    for (uint x = 0; x < mainMatrix.size(); x += CHUNK_SIZE) {
+        uint left = x, right = left + CHUNK_SIZE;
+        if (left + CHUNK_SIZE > mainMatrix.size() && left != mainMatrix.size()) {
+            right = mainMatrix.size();
+        }
+        this->secondMatrix.resize(mainMatrix.size());
+        THREADS.push_back(std::thread([left, right, thisPtr = this]() {
+            thisPtr->multiThreadLife(left, right);
+        }));
     }
 
-    this->mainMatrix.clear();
+    for (auto& thread : THREADS) {
+        thread.join();
+    }
+
     this->mainMatrix = this->secondMatrix;
     deleteBorders();
     this->iterations++;
+
+
+    auto timeP = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration<double>(timeP - timeN);
+    printf("generation time: %f s\n", duration.count());
 }
 
-void GameOfLife::fill(bool znach, uint posX, uint posY, uint size) {
+void GameOfLife::fill(bool znach, uint posX, uint posY, uint size) noexcept {
     if (posX + size > this->mainMatrix.size() || posY + size > this->mainMatrix.size()) {
-        throw std::runtime_error("pos + size > matrix.size!\n");
+        printf("pos + size > matrix.size!\n");
+        return;
     }
     for (uint x = posX; x < posX + size; x++) {
         for (uint y = posY; y < posY + size; y++) {
@@ -139,6 +188,14 @@ void GameOfLife::deleteBorders() {
 
 size_t GameOfLife::getNeighbourCount(uint i, uint j) noexcept {
     size_t count = 0;
+    if (i > mainMatrix.size()) {
+        printf("i more then size!");
+        return 0;
+    }
+    if (j > mainMatrix.size()) {
+        printf("j more then size!");
+        return 0;
+    }
     if (this->mainMatrix[i - 1][j - 1]) ++count;
     if (this->mainMatrix[i][j - 1]) ++count;
     if (this->mainMatrix[i + 1][j - 1]) ++count;
