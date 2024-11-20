@@ -3,7 +3,7 @@
 ## Запуск
 
 ### Windows 
-Запустить файл WindowsVisualStudio/WindowsVisualStudio.sln (Visual Studio, библиотеки уже установлены локально в проекте).
+Запустить файл WindowsVisualStudio/WindowsVisualStudio.sln (Visual Studio, библиотеки уже установлены локально в проекте). Выбрать Release x86 в конфигурации сборки!. Запустить нажатием F5.
 ### Linux
 Установить библиотеки: sudo apt-get install libgl1-mesa-dev freeglut3-dev libglu1-mesa-dev.
 
