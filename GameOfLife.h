@@ -60,6 +60,7 @@ private:
 
 	uint iterations = 0;
 
+	void initMultiThread(uint top, uint bot);
 	void multiThreadLife(uint top, uint bot);
 	static uint THREADS_COUNT;
 public:

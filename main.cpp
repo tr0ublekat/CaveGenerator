@@ -17,7 +17,7 @@
 
 using namespace std;
 
-const string filename = "out.bmp";
+const string filename = "out";
 // Добавить отличие при начальной инициализации, 3-ех итерациях и 10 итерациях в презентацию
 // Про шанс начальной инициализации (что будет при 45% и например  55%)
 
@@ -55,7 +55,6 @@ void display() {
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    //glScalef(0.01f + scale, 0.01f + scale, 0.01f + scale);
     glTranslatef(-float(mapSize)/20 + x_offset - 0.1f, float(mapSize)/20 - y_offset, -float(mapSize)/10 + scale);
 
     float posX = 0;
@@ -66,12 +65,12 @@ void display() {
         for (auto y : x) {
             glPushMatrix();
             glBegin(GL_QUADS);
-            float color = float(int(!y));           // Преобразование true -> 0.0f и false -> 1.0f
-            glColor3f(color, color, color);
-            glVertex2f(0.0f + posX, 0.0f - posY);
-            glVertex2f(0.1f + posX, 0.0f - posY);
-            glVertex2f(0.1f + posX, 0.1f - posY);
-            glVertex2f(0.0f + posX, 0.1f - posY);
+                float color = float(int(!y));           // Преобразование true -> 0.0f и false -> 1.0f
+                glColor3f(color, color, color);
+                glVertex2f(0.0f + posX, 0.0f - posY);
+                glVertex2f(0.1f + posX, 0.0f - posY);
+                glVertex2f(0.1f + posX, 0.1f - posY);
+                glVertex2f(0.0f + posX, 0.1f - posY);
             glEnd();
             glPopMatrix();
             posX += 0.1f;
@@ -181,10 +180,11 @@ void keyboard(unsigned char c, int x, int y) {
         y_offset = +0.1f;
     }
     else if (c == '\\') {
-        gameOfLife.saveToBMP(PATH + filename);
+        gameOfLife.saveToBMP(PATH + filename+".bmp");
+        gameOfLife.deserialization(PATH + filename + ".txt");
     }
     else if (c == '1') {
-        changeMap(10);
+        changeMap(30);
     }
     else if (c == '2') {
         changeMap(100);
@@ -238,7 +238,7 @@ int main(int argc, char **argv) {
     gameOfLife.setS(4, 8);
     string rules = gameOfLife.getRules();
 
-    GameOfLife::setThreadCount(0);          // 0 для количества потоков по системе
+    GameOfLife::setThreadCount(0);          // 0 для количества потоков по количеству потоков процессора
 
     glutInitDisplayMode(GLUT_DOUBLE);
     glutInitWindowSize(600, 600);
