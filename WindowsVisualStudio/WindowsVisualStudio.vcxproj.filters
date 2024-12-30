@@ -21,12 +21,15 @@
     <ClCompile Include="..\main.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="..\bitmap.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\GameOfLife.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="..\BitmapPlusPlus.hpp">
+    <ClInclude Include="..\bitmap.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

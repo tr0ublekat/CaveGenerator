@@ -10,7 +10,8 @@
 #include <iterator>
 #include <utility>
 
-#include "BitmapPlusPlus.hpp"
+// #include "BitmapPlusPlus.hpp"
+#include "bitmap.h"
 
 using uint = unsigned int;
 
@@ -51,10 +52,10 @@ private:
 	vector<size_t> S;
 
 
-	bool randBool(uint chance = 50);
+	static bool randBool(uint chance = 50) noexcept;
 	size_t getNeighbourCount(uint i, uint j) noexcept;
 	void deleteBorders();
-	bool isNumberInArray(size_t number,vector<size_t> &arr);
+	static bool isNumberInArray(size_t number, vector<size_t> &arr) noexcept;
 
 	void init();
 
@@ -75,6 +76,7 @@ public:
 
 	string getRules();
 	void stepBack();
+
 
 	void setChance(uint chance);
 	void setChance(uint *chance);

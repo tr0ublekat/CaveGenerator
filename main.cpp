@@ -18,8 +18,6 @@
 using namespace std;
 
 const string filename = "out.bmp";
-// Добавить отличие при начальной инициализации, 3-ех итерациях и 10 итерациях в презентацию
-// Про шанс начальной инициализации (что будет при 45% и например  55%)
 
 
 static int randomInt(int left, int right) {
@@ -30,7 +28,8 @@ static int randomInt(int left, int right) {
 }
 
 size_t mapSize = 100; // Размер карты по Х и Y. Можно менять от 4 до 1000
-float scale = 10.0f / float(mapSize);
+float mainScale = 10.0f / float(mapSize); // сохраним размер для дальнейшего использования при скролле мышкой
+float scale = mainScale;
 unsigned int chance = 50;
 
 // Смещение камеры по Х и Y
@@ -56,7 +55,11 @@ void display() {
     glLoadIdentity();
 
     //glScalef(0.01f + scale, 0.01f + scale, 0.01f + scale);
-    glTranslatef(-float(mapSize)/20 + x_offset - 0.1f, float(mapSize)/20 - y_offset, -float(mapSize)/10 + scale);
+    glTranslatef(
+        -float(mapSize) / 20 + x_offset -0.1f,
+        float(mapSize) / 20 - y_offset,
+        -float(mapSize) / 10 + scale
+    );
 
     float posX = 0;
     float posY = 0;
@@ -66,12 +69,12 @@ void display() {
         for (auto y : x) {
             glPushMatrix();
             glBegin(GL_QUADS);
-            float color = float(int(!y));           // Преобразование true -> 0.0f и false -> 1.0f
-            glColor3f(color, color, color);
-            glVertex2f(0.0f + posX, 0.0f - posY);
-            glVertex2f(0.1f + posX, 0.0f - posY);
-            glVertex2f(0.1f + posX, 0.1f - posY);
-            glVertex2f(0.0f + posX, 0.1f - posY);
+                float color = float(int(!y));           // Преобразование true -> 0.0f и false -> 1.0f
+                glColor3f(color, color, color);
+                glVertex2f(0.0f + posX, 0.0f - posY);
+                glVertex2f(0.1f + posX, 0.0f - posY);
+                glVertex2f(0.1f + posX, 0.1f - posY);
+                glVertex2f(0.0f + posX, 0.1f - posY);
             glEnd();
             glPopMatrix();
             posX += 0.1f;
@@ -120,10 +123,10 @@ static void changeMap() noexcept {
 
 void keyboard(unsigned char c, int x, int y) {
     if (c == '+' || c == '=') {
-        scale += 0.5f;
+        scale += mainScale * 2;
     }
     else if (c == '-' || c == '_') {
-        scale -= 0.5f;
+        scale -= mainScale * 2;
     }
     else if (c == '[') {
         gameOfLife = GameOfLife(mapSize, chance);
@@ -218,9 +221,66 @@ void keyboard(unsigned char c, int x, int y) {
         for (int x = 0; x < 100; x++) {
             unsigned int sizeX = (unsigned int)(randomInt(0, mapSize - 2));
             unsigned int sizeY = (unsigned int)(randomInt(0, mapSize - 2));
-            gameOfLife.fill(bool(randomInt(0, 1)), sizeX, sizeY, 2);
+            gameOfLife.fill(bool(randomInt(0, 1)), sizeX, sizeY, randomInt(0, mapSize/100));
         }
     }
+}
+
+static void specialKeyboard(int key, int mouseX, int mouseY) {
+    switch (key) {
+    case GLUT_KEY_F5:
+        printf("pressed F5\n");
+        gameOfLife.saveToBMP(PATH + filename);
+        break;
+    case GLUT_KEY_F6:
+        printf("pressed F6\n");
+        break;
+    default:
+        break;
+    }
+}
+
+
+
+static void wheel(int dir, int pressed, int x, int y) noexcept {
+    if (dir == 3) {
+        scale += mainScale * 2;
+    }
+    else if (dir == 4) {
+        scale -= mainScale * 2;
+    }
+}
+
+static void mouse(int x, int y) noexcept {
+    static int prev_x = x;
+    static int prev_y = y;
+
+
+    static float delta_x = 0;
+    static float delta_y = 0;
+    //cout << abs(prev_x) - abs(x) << " ";
+    //cout << abs(prev_y) - abs(y) << "\n";
+    if (abs(abs(prev_x) - abs(x)) > mapSize / 2) {
+        prev_x = x;
+        return;
+    }
+    if (abs(abs(prev_y) - abs(y)) > mapSize / 2) {
+        prev_y = y;
+        return;
+    }
+
+    delta_x = float(x - prev_x) / 50;
+    delta_y = float(y - prev_y) / 50;
+
+    //printf("DELTA: %f %f\t", delta_x, delta_y);
+    //printf("size %d\n", mapSize);
+
+    x_offset += delta_x;
+    y_offset += delta_y;
+
+    prev_x = x;
+    prev_y = y;
+    //glutPostRedisplay();
 }
 
 void simulation() {
@@ -228,7 +288,6 @@ void simulation() {
 }
 
 int main(int argc, char **argv) {
-    GameOfLife::setThreadCount(4);
     setlocale(0, "");
     glutInit(&argc, argv);
 
@@ -248,7 +307,12 @@ int main(int argc, char **argv) {
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
     glutIdleFunc(simulation);
+
     glutKeyboardFunc(keyboard);
+    glutSpecialFunc(specialKeyboard);
+
+    glutMouseFunc(wheel);
+    glutMotionFunc(mouse);
 
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 

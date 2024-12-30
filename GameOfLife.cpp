@@ -140,7 +140,7 @@ void GameOfLife::life() noexcept {
         this->secondMatrix.resize(mainMatrix.size());
         THREADS.push_back(std::thread([left, right, thisPtr = this]() {
             thisPtr->multiThreadLife(left, right);
-            }));
+        }));
     }
 
     for (auto& thread : THREADS) {
@@ -209,7 +209,7 @@ size_t GameOfLife::getNeighbourCount(uint i, uint j) noexcept {
     return count;
 }
 
-bool GameOfLife::randBool(uint chance) {
+bool GameOfLife::randBool(uint chance) noexcept {
     static std::random_device rd;
     static std::mt19937 gen(rd());
     std::uniform_int_distribution<> dist(0, 100);
@@ -255,7 +255,7 @@ void GameOfLife::setChance(uint *chance) {
     this->chance = *chance;
 }
 
-bool GameOfLife::isNumberInArray(size_t number, vector<size_t>& vec) {
+bool GameOfLife::isNumberInArray(size_t number, vector<size_t>& vec) noexcept {
     for (auto& a : vec) {
         if (a == number) {
             return true;
@@ -298,29 +298,22 @@ string GameOfLife::getRules() {
 }
 
 void GameOfLife::saveToBMP(const string& filename) {
-    static bmp::Pixel colorWHITE{ 255,255,255 };
-    static bmp::Pixel colorBLACK{ 0,0,0 };
 
-    bmp::Bitmap image(this->mainMatrix.size(), this->mainMatrix[0].size());
+    Bitmap bmp;
 
-    int i = 0, j = 0;
-    for (bmp::Pixel& pixel : image) {
-
-        if (this->mainMatrix[i][j]) {
-            pixel = colorBLACK;
+    PixelMatrix pixelMat;
+    for (auto& a : this->mainMatrix) {
+        static vector<Pixel> tempMatrix;
+        for (auto b : a) {
+            tempMatrix.push_back(Pixel(b));
         }
-        else {
-            pixel = colorWHITE;
-        }
-
-        if (j == this->mainMatrix.size() - 1) {
-            j = 0;
-            i++;
-        }
-        else {
-            ++j;
-        }
+        pixelMat.push_back(tempMatrix);
+        tempMatrix.clear();
     }
-    image.save(filename);
+
+
+    bmp.fromPixelMatrix(pixelMat);
+    bmp.save(filename);
+
     printf("File %s saved!\n", filename.c_str());
 }
