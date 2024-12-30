@@ -18,35 +18,55 @@ GameOfLife::GameOfLife(size_t size, uint *chance) {
     this->init();
 }
 
-void GameOfLife::init() {
-    this->mainMatrix.clear();
-    for (size_t i = 0; i < size; ++i) {
+void GameOfLife::initMultiThread(uint top, uint bot) {
+    uint y = top;
+    while (y <= bot) {
         vector<bool> row;
-        row.clear();
-        row.reserve(size);
-
-        for (size_t j = 0; j < size; ++j) {
-            if ((i == 0) || (j == 0) || (i == size - 1) || (j == size - 1)) {
-                bool value = true;
-                row.push_back(value);
+        row.reserve(mainMatrix.size());
+        for (size_t x = 0; x < mainMatrix.size(); ++x) {
+            if ((x == 0) || (x == mainMatrix.size() - 1) || (y == 0) || (y == mainMatrix.size() - 1)) {
+                row.push_back(true);
             }
             else {
-                bool value = (randBool(this->chance));
-                row.push_back(value);
+                row.push_back(this->randBool(this->chance));
             }
         }
-        this->mainMatrix.push_back(row);
+        mainMatrix[y] = row;
+        y++;
+    }
+}
+
+void GameOfLife::init() {
+    this->mainMatrix.resize(size);
+    const uint THREADS_COUNT = GameOfLife::THREADS_COUNT;
+    const uint CHUNK_SIZE = (size / THREADS_COUNT) + 1;
+    vector<std::thread> THREADS;
+
+    for (uint x = 0; x < mainMatrix.size(); x += CHUNK_SIZE) {
+        uint left = x, right = left + CHUNK_SIZE;
+        if (left + CHUNK_SIZE > mainMatrix.size() && left != mainMatrix.size()) {
+            right = mainMatrix.size()-1;
+        }
+        THREADS.push_back(std::thread([left, right, thisPtr = this]() {
+            thisPtr->initMultiThread(left, right);
+        }));
+    }
+
+    for (auto& thread : THREADS) {
+        thread.join();
     }
 }
 
 void GameOfLife::reInit(size_t size) {
     this->size = size;
+    this->mainMatrix.resize(size);
     this->backupMatrix.clear();
     this->secondMatrix.clear();
     this->init();
 }
 void GameOfLife::reInit(size_t size, uint chanceOfSpawn) {
     this->size = size;
+    this->mainMatrix.resize(size);
     this->chance = chanceOfSpawn;
     this->backupMatrix.clear();
     this->secondMatrix.clear();
@@ -56,9 +76,10 @@ void GameOfLife::reInit(size_t size, uint chanceOfSpawn) {
 void GameOfLife::setThreadCount(uint count) {
     if (count == 0) {
         GameOfLife::THREADS_COUNT = std::thread::hardware_concurrency();
-        return;
     }
-    GameOfLife::THREADS_COUNT = count;
+    else {
+        GameOfLife::THREADS_COUNT = count;
+    }
 }
 
 void GameOfLife::multiThreadLife(uint top, uint bot) {
@@ -189,22 +210,26 @@ void GameOfLife::deleteBorders() {
 
 size_t GameOfLife::getNeighbourCount(uint i, uint j) noexcept {
     size_t count = 0;
-    if (i > mainMatrix.size()) {
+    if (i >= mainMatrix.size()) {
         printf("i more then size!");
         return 0;
     }
-    if (j > mainMatrix.size()) {
+    if (j >= mainMatrix.size()) {
         printf("j more then size!");
         return 0;
     }
+
     if (this->mainMatrix[i - 1][j - 1]) ++count;
-    if (this->mainMatrix[i][j - 1]) ++count;
-    if (this->mainMatrix[i + 1][j - 1]) ++count;
-    if (this->mainMatrix[i + 1][j]) ++count;
-    if (this->mainMatrix[i + 1][j + 1]) ++count;
-    if (this->mainMatrix[i][j + 1]) ++count;
+    if (this->mainMatrix[i - 1][j    ]) ++count;
     if (this->mainMatrix[i - 1][j + 1]) ++count;
-    if (this->mainMatrix[i - 1][j]) ++count;
+
+    if (this->mainMatrix[i    ][j - 1]) ++count;
+    if (this->mainMatrix[i    ][j + 1]) ++count;
+
+    if (this->mainMatrix[i + 1][j - 1]) ++count;
+    if (this->mainMatrix[i + 1][j    ]) ++count;
+    if (this->mainMatrix[i + 1][j + 1]) ++count;
+
 
     return count;
 }
