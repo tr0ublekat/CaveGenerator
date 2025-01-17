@@ -153,6 +153,8 @@ void GameOfLife::life() noexcept {
     const uint CHUNK_SIZE = (mainMatrix.size() / THREADS_COUNT) + 1;
     vector<std::thread> THREADS;
 
+    auto timeN = std::chrono::high_resolution_clock::now();
+
     for (uint x = 0; x < mainMatrix.size(); x += CHUNK_SIZE) {
         uint left = x, right = left + CHUNK_SIZE;
         if (left + CHUNK_SIZE > mainMatrix.size() && left != mainMatrix.size()) {
@@ -172,9 +174,9 @@ void GameOfLife::life() noexcept {
     deleteBorders();
     this->iterations++;
 
-    //auto timeP = std::chrono::high_resolution_clock::now();
-    //auto duration = std::chrono::duration<double>(timeP - timeN);
-    //printf("generation time: %f s\n", duration.count());
+    auto timeP = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration<double>(timeP - timeN);
+    printf("generation time: %f s\n", duration.count());
 }
 void GameOfLife::fill(bool znach, uint posX, uint posY, uint size) noexcept {
     if (posX + size > this->mainMatrix.size() || posY + size > this->mainMatrix.size()) {
@@ -249,8 +251,8 @@ void GameOfLife::setBS(std::initializer_list<size_t> B, std::initializer_list<si
 	this->S = S;
 }
 
-vector<vector<bool>>& GameOfLife::operator()() {
-	return this->mainMatrix;
+vector<vector<bool>>* GameOfLife::operator()() {
+    return &(this->mainMatrix);
 }
 
 void GameOfLife::setB(std::initializer_list<size_t> arr) {

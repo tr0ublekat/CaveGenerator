@@ -19,6 +19,7 @@ using namespace std;
 
 const string filename = "out.bmp";
 
+static vector<vector<bool>> frameBuf;
 
 static int randomInt(int left, int right) {
     static std::random_device rd;
@@ -63,9 +64,9 @@ void display() {
 
     float posX = 0;
     float posY = 0;
-    vector<vector<bool>>& temp = gameOfLife();
+    vector<vector<bool>>* temp = gameOfLife();
 
-    for (auto& x : temp) {
+    for (auto& x : *temp) {
         for (auto y : x) {
             glPushMatrix();
             glBegin(GL_QUADS);
@@ -260,11 +261,11 @@ static void mouse(int x, int y) noexcept {
     static float delta_y = 0;
     //cout << abs(prev_x) - abs(x) << " ";
     //cout << abs(prev_y) - abs(y) << "\n";
-    if (abs(abs(prev_x) - abs(x)) > mapSize / 2) {
+    if (abs(abs(prev_x) - abs(x)) > int(mapSize / 2) ) {
         prev_x = x;
         return;
     }
-    if (abs(abs(prev_y) - abs(y)) > mapSize / 2) {
+    if (abs(abs(prev_y) - abs(y)) > int(mapSize / 2) ) {
         prev_y = y;
         return;
     }
